@@ -731,14 +731,9 @@ input[type=range]::-webkit-slider-thumb {
   ══════════════════════════════════════════ -->
   <div class="step" id="s15">
     <h2 class="q-title" id="vtitle">mira el video de la Nutri Claudia a continuación y entiende cómo funcionará todo 👇🏻</h2>
-    <div style="width:100%;background:#111;border-radius:14px;overflow:hidden">
-      <div style="width:100%;aspect-ratio:9/16;background:#1a1a1a;display:flex;align-items:center;justify-content:center">
-        <div style="width:54px;height:54px;border:2.5px solid rgba(255,255,255,.5);border-radius:50%;display:flex;align-items:center;justify-content:center">
-          <div style="border-style:solid;border-width:9px 0 9px 16px;border-color:transparent transparent transparent rgba(255,255,255,.7);margin-left:4px"></div>
-        </div>
-      </div>
-    </div>
-    <button class="btn" onclick="go(16)" style="margin-top:14px">Continuar</button>
+    <vturb-smartplayer id="vid-6a29f1cc58b615f4df6ddcde" style="display:block;margin:0 auto;width:100%;max-width:430px"></vturb-smartplayer>
+    <script type="text/javascript">var s=document.createElement("script");s.src="https://scripts.converteai.net/27a1456c-5e8d-488d-88a1-450d895dc79c/players/6a29f1cc58b615f4df6ddcde/v4/player.js",s.async=!0,document.head.appendChild(s);</script>
+    <button class="btn" id="btn-s15" onclick="go(16)" style="margin-top:14px;display:none">Continuar</button>
   </div>
 
   <!-- ══════════════════════════════════════════
@@ -1298,9 +1293,8 @@ input[type=range]::-webkit-slider-thumb {
     <h1>Tu plan de <span>21 días</span> para perder peso está listo</h1>
     <p>Descubre el método de ayuno que ya transformó a más de 45,000 personas en toda América Latina</p>
   </div>
-  <div class="sp-vid" style="padding:0;background:transparent;border-radius:0">
-    <vturb-smartplayer id="vid-6a29f1cc58b615f4df6ddcde" style="display:block;margin:0 auto;width:100%;max-width:430px"></vturb-smartplayer>
-    <script type="text/javascript">var s=document.createElement("script");s.src="https://scripts.converteai.net/27a1456c-5e8d-488d-88a1-450d895dc79c/players/6a29f1cc58b615f4df6ddcde/v4/player.js",s.async=!0,document.head.appendChild(s);</script>
+  <div class="sp-vid">
+    <div class="sp-vid-inner"><div class="play-lg"></div></div>
   </div>
   <div id="sp-below" style="display:none">
   <div class="sec">
@@ -1541,6 +1535,7 @@ function go(n) {
   hist.push(n); cur = n;
   prog(n);
   window.scrollTo({top:0, behavior:'smooth'});
+  if (n === 15) setTimeout(() => { const b = document.getElementById('btn-s15'); if (b) b.style.display = ''; }, 122000);
   if (n === 34) initRuler('hRuler', 140, 220, 180, 12, 'hVal');
   if (n === 35) initRuler('cwRuler', 40, 200, 70, 12, 'cwVal');
   if (n === 36) initRuler('gwRuler', 30, 180, 60, 12, 'gwVal');
@@ -1690,7 +1685,7 @@ function showSales() {
       t--;
       el.textContent=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
     },1000);
-  }, 122000);
+  }, 284000);
 }
 
 prog(1);
