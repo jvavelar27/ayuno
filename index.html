@@ -423,11 +423,14 @@ input[type=range]::-webkit-slider-thumb {
 .bi-ic { font-size: 21px; flex-shrink: 0; }
 .bi h4 { font-size: 13px; font-weight: 700; color: #111; margin-bottom: 3px; }
 .bi p { font-size: 12px; color: #6b7280; line-height: 1.4; }
-.price-sec { background: #111; padding: 26px 16px; text-align: center; }
-.ps-lbl { font-size: 12px; color: #9ca3af; margin-bottom: 6px; }
-.ps-old { font-size: 18px; color: #6b7280; text-decoration: line-through; margin-bottom: 4px; }
-.ps-new { font-size: 54px; font-weight: 900; color: #22c55e; line-height: 1; margin-bottom: 4px; }
-.ps-sub { font-size: 12px; color: #9ca3af; margin-bottom: 18px; }
+.price-box { border: 1.5px solid #e5e7eb; border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+.price-banner { background: #22c55e; color: #fff; font-size: 13px; font-weight: 700; text-align: center; padding: 8px 12px; }
+.price-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: #fff; }
+.price-name { font-size: 15px; font-weight: 600; color: #111; }
+.price-val { font-size: 22px; font-weight: 900; color: #111; }
+.cd-wrap { background: #fff0f0; border: 1px solid #fecaca; border-radius: 10px; padding: 10px 16px; margin-bottom: 12px; text-align: center; }
+.cd-lbl { font-size: 13px; color: #dc2626; font-weight: 500; }
+#cdt { font-weight: 700; }
 .btn-buy {
   display: block; width: 100%; background: #22c55e; color: #fff;
   font-size: 16px; font-weight: 800; border: none; border-radius: 99px;
@@ -1327,17 +1330,17 @@ input[type=range]::-webkit-slider-thumb {
     <div class="testi"><div class="st">★★★★★</div><p class="tt">"Sin pasar hambre, sin contar calorías. ¡Simplemente funciona!"</p><div class="ta">Andrea P. — 28 años, Argentina</div></div>
     <div class="testi"><div class="st">★★★★★</div><p class="tt">"Tengo hipotiroidismo y bajé 7 kg el primer mes con el plan adaptado."</p><div class="ta">Lucía R. — 38 años, Chile</div></div>
   </div>
-  <div class="price-sec">
-    <div class="ps-lbl">Plan Ayuno Reset</div>
-    <div class="ps-old">$100.00</div>
-    <div class="ps-new">$9.90</div>
-    <div class="ps-sub">Pago único — acceso de por vida</div>
-    <a class="btn-buy" href="https://pay.hotmart.com/L106046226K?checkoutMode=10" target="_blank">¡QUIERO MI PLAN AHORA!</a>
-    <div class="cd-wrap">
-      <div class="cd-lbl">Tu plan personalizado está reservado por:</div>
-      <div class="cd-t" id="cdt">02:00</div>
+  <div class="price-box">
+    <div class="price-banner">De $100 por solo 👇</div>
+    <div class="price-row">
+      <div class="price-name">Plan Ayuno Reset</div>
+      <div class="price-val">$9.90</div>
     </div>
   </div>
+  <div class="cd-wrap">
+    <div class="cd-lbl">Tu plan personalizado está reservado por: <span id="cdt">08:00</span></div>
+  </div>
+  <a class="btn-buy" href="https://pay.hotmart.com/L106046226K?checkoutMode=10" target="_blank">RECIBIR MI PLAN</a>
   <div class="trust-row">
     <div class="tr-item"><div class="ti">🔒</div>Compra SEGURA</div>
     <div class="tr-item"><div class="ti">✅</div>Satisfacción GARANTIZADA</div>
@@ -1351,7 +1354,7 @@ input[type=range]::-webkit-slider-thumb {
     </div>
   </div>
   <div class="sticky-buy">
-    <a class="btn-buy" href="https://pay.hotmart.com/L106046226K?checkoutMode=10" target="_blank">¡OBTENER MI PLAN POR $9.90!</a>
+    <a class="btn-buy" href="https://pay.hotmart.com/L106046226K?checkoutMode=10" target="_blank">RECIBIR MI PLAN</a>
   </div>
   <div class="sp80"></div>
 </div>
@@ -1679,7 +1682,7 @@ function showSales() {
   const s = document.getElementById('sp');
   s.classList.add('on');
   window.scrollTo({top:0, behavior:'smooth'});
-  let t=120;
+  let t=480;
   const el=document.getElementById('cdt');
   setInterval(()=>{
     if(t<=0){el.textContent='00:00';return;}
