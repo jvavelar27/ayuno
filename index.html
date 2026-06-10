@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ayuno Reset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: 'Inter', sans-serif;
+  background: #fff;
+  color: #111;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+#shell {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TOP BAR */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 12px 16px 0;
+  min-height: 44px;
+}
+.top-logo {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+.back-btn {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-20%);
+  font-size: 22px;
+  color: #374151;
+  cursor: pointer;
+  background: none;
+  border: none;
+  line-height: 1;
+  display: none;
+  padding: 4px;
+  -webkit-tap-highlight-color: transparent;
+}
+.back-btn.show { display: block; }
+
+/* PROGRESS BAR */
+.prog-wrap { padding: 8px 16px 0; }
+.prog-track {
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: #22c55e;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* STEP */
+.step {
+  display: none;
+  flex-direction: column;
+  padding: 20px 16px 48px;
+  flex: 1;
+  animation: fadeUp 0.25s ease;
+}
+.step.active { display: flex; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* TITLES */
+.q-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111;
+  line-height: 1.25;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.q-title.center { text-align: center; }
+
+/* SINGLE-SELECT: text left + image/emoji right */
+.opt-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.opt-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  min-height: 58px;
+  background: #fff;
+}
+.opt-row:hover, .opt-row.sel { border-color: #22c55e; background: #f0fdf4; }
+.opt-row .ot { font-size: 15px; font-weight: 500; color: #111; flex: 1; padding-right: 10px; }
+.opt-row .oi { width: 54px; height: 54px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
+.opt-row .oe { font-size: 26px; flex-shrink: 0; line-height: 1; }
+
+/* MULTI-SELECT: emoji/img left + text + checkbox right */
+.opt-multi {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  background: #fff;
+}
+.opt-multi:hover, .opt-multi.sel { border-color: #22c55e; background: #f0fdf4; }
+.opt-multi .ml-em { font-size: 24px; flex-shrink: 0; line-height: 1; min-width: 28px; text-align: center; }
+.opt-multi .ml-img { width: 48px; height: 48px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+.opt-multi .ml-t { font-size: 14px; font-weight: 500; color: #111; flex: 1; }
+.ml-chk {
+  width: 20px; height: 20px;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.opt-multi.sel .ml-chk { background: #22c55e; border-color: #22c55e; }
+.opt-multi.sel .ml-chk::after {
+  content: '';
+  width: 5px; height: 9px;
+  border: 2px solid #fff;
+  border-top: none; border-left: none;
+  transform: rotate(45deg) translateY(-1px);
+  display: block;
+}
+
+/* GENDER CARDS */
+.gender-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+.g-card {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color .15s;
+  -webkit-tap-highlight-color: transparent;
+  background: #fff;
+}
+.g-card:hover, .g-card.sel { border-color: #22c55e; }
+.g-card img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; }
+.g-card .g-lbl {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 14px;
+  font-size: 15px; font-weight: 600; color: #111;
+}
+.g-arrow { font-size: 16px; color: #9ca3af; }
+
+/* FIGURE LAYOUT */
+.fig-row { display: flex; gap: 12px; width: 100%; align-items: flex-start; }
+.fig-col { width: 42%; flex-shrink: 0; }
+.fig-col img { width: 100%; display: block; }
+.fig-btns { flex: 1; display: flex; flex-direction: column; gap: 8px; padding-top: 6px; }
+.fig-btn {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px 13px;
+  font-size: 13px; font-weight: 500; color: #111;
+  cursor: pointer; text-align: left;
+  transition: border-color .15s, background .15s;
+  -webkit-tap-highlight-color: transparent; line-height: 1.3;
+}
+.fig-btn:hover, .fig-btn.sel { border-color: #22c55e; background: #f0fdf4; }
+
+/* BUTTONS */
+.btn {
+  width: 100%;
+  background: #22c55e;
+  color: #fff;
+  font-size: 16px; font-weight: 700;
+  border: none; border-radius: 99px;
+  padding: 18px 24px;
+  cursor: pointer; margin-top: 16px;
+  transition: background .15s, transform .1s;
+  -webkit-tap-highlight-color: transparent;
+  display: block; text-align: center; text-decoration: none;
+  letter-spacing: .2px;
+}
+.btn:hover { background: #16a34a; }
+.btn:active { transform: scale(.98); }
+.btn.off { background: #bbf7d0; cursor: default; }
+
+/* INTERSTITIAL */
+.inter { display: flex; flex-direction: column; align-items: center; width: 100%; }
+.inter-img { width: 100%; border-radius: 14px; display: block; margin: 0 auto 16px; }
+.inter-txt { font-size: 15px; color: #374151; line-height: 1.6; text-align: center; margin-bottom: 4px; }
+
+/* HERO (step 1) */
+.hero-img { width: 100%; border-radius: 14px; display: block; margin-bottom: 16px; }
+.hero-h {
+  font-size: 22px; font-weight: 800; color: #111;
+  text-align: center; line-height: 1.3; margin-bottom: 8px;
+}
+.hero-h .g { color: #22c55e; }
+.hero-h .r { color: #ef4444; }
+.hero-sub { font-size: 15px; color: #374151; text-align: center; line-height: 1.5; margin-bottom: 4px; }
+
+/* SLIDERS */
+.slide-wrap { width: 100%; text-align: center; padding-bottom: 8px; }
+.slide-val { font-size: 52px; font-weight: 900; color: #111; line-height: 1; margin-bottom: 2px; }
+.slide-unit { font-size: 18px; color: #9ca3af; }
+input[type=range] {
+  -webkit-appearance: none; width: 100%;
+  height: 5px; background: #e5e7eb; border-radius: 99px;
+  outline: none; margin: 18px 0 6px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 26px; height: 26px;
+  border-radius: 50%; background: #22c55e; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(34,197,94,.4);
+}
+.slide-lbl { display: flex; justify-content: space-between; font-size: 12px; color: #9ca3af; }
+
+/* NAME INPUT */
+.n-input {
+  width: 100%;
+  border: 1.5px solid #e5e7eb; border-radius: 14px;
+  padding: 16px; font-size: 16px;
+  font-family: 'Inter',sans-serif; color: #111;
+  outline: none; transition: border-color .15s;
+}
+.n-input:focus { border-color: #22c55e; }
+.n-input::placeholder { color: #9ca3af; }
+
+/* FOOD GRID */
+.food-section { margin-bottom: 14px; width: 100%; }
+.food-cat { font-size: 13px; font-weight: 700; color: #6b7280; margin-bottom: 8px; letter-spacing: .3px; }
+.food-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.food-chip {
+  background: #f9fafb; border: 1.5px solid #e5e7eb;
+  border-radius: 99px; padding: 7px 14px;
+  font-size: 13px; font-weight: 500; color: #111;
+  cursor: pointer; transition: all .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.food-chip:hover, .food-chip.sel { background: #f0fdf4; border-color: #22c55e; color: #16a34a; }
+
+/* LOADING */
+.load-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; min-height: 70vh; gap: 16px;
+}
+.spinner {
+  width: 56px; height: 56px;
+  border: 4px solid #e5e7eb; border-top-color: #22c55e;
+  border-radius: 50%; animation: spin .9s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+.load-t { font-size: 20px; font-weight: 700; text-align: center; }
+.ck-list { display: flex; flex-direction: column; gap: 12px; max-width: 300px; width: 100%; }
+.ck-row { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #374151; }
+.ck-ic {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #22c55e; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; opacity: 0; transition: opacity .3s;
+}
+.ck-ic.on { opacity: 1; }
+.ck-ic::after {
+  content: ''; width: 5px; height: 9px;
+  border: 2px solid #fff; border-top: none; border-left: none;
+  transform: rotate(45deg) translateY(-1px); display: block;
+}
+
+/* RESULTS */
+.res-card {
+  background: linear-gradient(135deg,#f0fdf4,#dcfce7);
+  border: 2px solid #22c55e; border-radius: 20px;
+  padding: 22px; text-align: center; margin-bottom: 14px; width: 100%;
+}
+.res-n { font-size: 62px; font-weight: 900; color: #111; line-height: 1; }
+.res-u { font-size: 22px; color: #6b7280; }
+.res-l { font-size: 14px; color: #374151; margin-top: 6px; }
+.stat-row { display: flex; gap: 10px; width: 100%; margin-bottom: 12px; }
+.stat-box { flex: 1; background: #f9fafb; border-radius: 14px; padding: 14px; text-align: center; }
+.stat-box .sn { font-size: 24px; font-weight: 800; color: #22c55e; }
+.stat-box .sl { font-size: 12px; color: #6b7280; margin-top: 2px; }
+
+/* SALES PAGE */
+#sp {
+  display: none; flex-direction: column;
+  background: #fff; min-height: 100vh;
+  max-width: 430px; margin: 0 auto;
+}
+#sp.on { display: flex; }
+.sp-top { background: #111; padding: 12px; text-align: center; }
+.sp-top span { font-size: 13px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+.sp-top em { color: #22c55e; font-style: normal; }
+.sp-hero { padding: 22px 16px 14px; text-align: center; }
+.sp-hero h1 { font-size: 22px; font-weight: 800; line-height: 1.25; color: #111; margin-bottom: 10px; }
+.sp-hero h1 span { color: #22c55e; }
+.sp-hero p { font-size: 14px; color: #374151; line-height: 1.6; }
+.sp-vid { margin: 0 16px 18px; border-radius: 14px; overflow: hidden; background: #111; }
+.sp-vid-inner {
+  width: 100%; aspect-ratio: 16/9; background: #1a1a1a;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.play-lg {
+  width: 64px; height: 64px; background: #22c55e;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+.play-lg::after {
+  content: ''; border-style: solid;
+  border-width: 11px 0 11px 20px; border-color: transparent transparent transparent #fff;
+  margin-left: 5px;
+}
+.sec { padding: 18px 16px; width: 100%; }
+.sec-t { font-size: 18px; font-weight: 800; color: #111; margin-bottom: 14px; text-align: center; }
+.bi { display: flex; align-items: flex-start; gap: 12px; background: #f9fafb; border-radius: 14px; padding: 14px; margin-bottom: 9px; }
+.bi-ic { font-size: 21px; flex-shrink: 0; }
+.bi h4 { font-size: 13px; font-weight: 700; color: #111; margin-bottom: 3px; }
+.bi p { font-size: 12px; color: #6b7280; line-height: 1.4; }
+.price-sec { background: #111; padding: 26px 16px; text-align: center; }
+.ps-lbl { font-size: 12px; color: #9ca3af; margin-bottom: 6px; }
+.ps-old { font-size: 18px; color: #6b7280; text-decoration: line-through; margin-bottom: 4px; }
+.ps-new { font-size: 54px; font-weight: 900; color: #22c55e; line-height: 1; margin-bottom: 4px; }
+.ps-sub { font-size: 12px; color: #9ca3af; margin-bottom: 18px; }
+.btn-buy {
+  display: block; width: 100%; background: #22c55e; color: #fff;
+  font-size: 16px; font-weight: 800; border: none; border-radius: 99px;
+  padding: 20px; cursor: pointer; text-decoration: none; text-align: center;
+  transition: background .15s, transform .1s;
+}
+.btn-buy:hover { background: #16a34a; }
+.cd-wrap { margin-top: 14px; text-align: center; }
+.cd-lbl { font-size: 12px; color: #9ca3af; margin-bottom: 4px; }
+.cd-t { font-size: 28px; font-weight: 900; color: #22c55e; letter-spacing: 3px; }
+.trust-row { display: flex; justify-content: center; gap: 18px; padding: 18px; flex-wrap: wrap; }
+.tr-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 9px; font-weight: 700; color: #6b7280; text-align: center; text-transform: uppercase; letter-spacing: .5px; }
+.tr-item .ti { font-size: 22px; }
+.guar {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: #f0fdf4; border: 2px solid #22c55e; border-radius: 16px;
+  padding: 16px; margin: 0 16px 18px;
+}
+.guar .gi { font-size: 32px; flex-shrink: 0; }
+.guar h4 { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 5px; }
+.guar p { font-size: 13px; color: #374151; line-height: 1.5; }
+.testi { background: #f9fafb; border-radius: 14px; padding: 14px; margin-bottom: 9px; }
+.testi .st { color: #f59e0b; font-size: 13px; margin-bottom: 5px; }
+.testi .tt { font-size: 13px; color: #374151; line-height: 1.5; font-style: italic; margin-bottom: 7px; }
+.testi .ta { font-size: 12px; font-weight: 700; color: #111; }
+.sticky-buy {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  padding: 10px 16px 18px;
+  background: linear-gradient(to top,#fff 75%,transparent);
+  z-index: 99;
+}
+.sp80 { height: 80px; }
+.div { height: 1px; background: #f3f4f6; margin: 0 16px; }
+.small { font-size: 12px; color: #9ca3af; text-align: center; width: 100%; margin-top: 6px; }
+.badge { display: inline-block; background: #f0fdf4; color: #16a34a; font-size: 12px; font-weight: 700; border-radius: 99px; padding: 4px 12px; border: 1px solid #bbf7d0; align-self: flex-start; margin-bottom: 12px; }
+.info-box { background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 12px; padding: 13px; width: 100%; margin-bottom: 12px; }
+.info-box p { font-size: 13px; color: #166534; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div id="shell">
+  <div class="top-bar">
+    <button class="back-btn" id="backBtn" onclick="goBack()">←</button>
+    <div class="top-logo">🔥 AYUNO RESET</div>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="pf" style="width:3%"></div></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       1 — LANDING
+  ══════════════════════════════════════════ -->
+  <div class="step active" id="s1">
+    <img class="hero-img" src="https://media.inlead.cloud/uploads/50771/2026-04-23/lg-FFV8P-chatgpt-image-23-de-abr-de-2026-21-36-41.png" alt="">
+    <h1 class="hero-h">
+      Este <span class="g">método de ayuno adaptado</span> está ayudando a hombres y mujeres a <span class="r">perder hasta 10 kg en 21 días</span> sin pasar hambre
+    </h1>
+    <p class="hero-sub">responde este test gratuito de solo 2 minutos y aprende 👇</p>
+    <button class="btn" onclick="go(2)">YO TAMBIÉN QUIERO APRENDER! 📊</button>
+    <p class="small">Gratis · Solo 2 minutos</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       2 — GÉNERO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s2">
+    <h2 class="q-title">Ayuno intermitente para:</h2>
+    <div class="gender-grid">
+      <div class="g-card" onclick="pick(this,3)">
+        <img src="https://media.inlead.cloud/uploads/50771/2026-04-23/md-dZYjd-chatgpt-image-23-de-abr-de-2026-21-45-27.webp" alt="Hombre">
+        <div class="g-lbl">Hombre<span class="g-arrow">›</span></div>
+      </div>
+      <div class="g-card" onclick="pick(this,3)">
+        <img src="https://media.inlead.cloud/uploads/50771/2026-04-23/md-6bdxE-chatgpt-image-23-de-abr-de-2026-21-49-40.webp" alt="Mujer">
+        <div class="g-lbl">Mujer<span class="g-arrow">›</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       3 — EDAD
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s3">
+    <h2 class="q-title">Ajusta tu plan según tu edad</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,4)">
+        <span class="ot">18 a 25 años</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-wUjmr-xs-7wrba-xs-al4og-xs-lopxm-clipboard-image-1736445428.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,4)">
+        <span class="ot">26 a 35 años</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-y5Naa-xs-zufda-xs-voi95-xs-r0gp6-clipboard-image-1736445424.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,4)">
+        <span class="ot">36 a 45 años</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-qttJ0-xs-roult-xs-0yfhn-xs-yu1gr-clipboard-image-1736445439.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,4)">
+        <span class="ot">+ de 46 años</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-DlPZO-xs-ywnbf-xs-bz6xs-xs-ti1gn-clipboard-image-1736445449.webp" alt="" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       4 — SOCIAL PROOF
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s4">
+    <div class="inter">
+      <h2 class="q-title center" style="font-size:28px;margin-bottom:14px">
+        + de 45 mil personas eligieron <span style="color:#22c55e">Ayuno Reset</span>
+      </h2>
+      <img class="inter-img" src="https://media.inlead.cloud/uploads/50771/2026-04-24/lg-O5Tbw-lg-a6cfy-lg-i5dy6-lg-lamoy-clipboard-image-1736446376.webp" alt="">
+      <button class="btn" onclick="go(5)">Continuar</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       5 — OBJETIVO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s5">
+    <h2 class="q-title">Cuál es tu objetivo principal?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,6)"><span class="ot">Perder peso</span><span class="oe">🤙</span></div>
+      <div class="opt-row" onclick="pick(this,6)"><span class="ot">Ponerse en forma</span><span class="oe">👌</span></div>
+      <div class="opt-row" onclick="pick(this,6)"><span class="ot">Mejorar la salud del corazón</span><span class="oe">🫀</span></div>
+      <div class="opt-row" onclick="pick(this,6)"><span class="ot">Reducir el estrés</span><span class="oe">🧘</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       6 — FÍSICO ACTUAL
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s6">
+    <h2 class="q-title">Cómo describirías tu físico?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,7)">
+        <span class="ot">Delgado</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-enDXc-xs-qvhlw-xs-qbvaj-xs-ucbgx-clipboard-image-1736445603.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,7)">
+        <span class="ot">Flacidez</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-4DyRY-xs-5oe5v-xs-1ckyr-xs-a1yrx-clipboard-image-1736445550.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,7)">
+        <span class="ot">Algunos kilos de más</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-7UfiE-xs-8jqyp-xs-7njqz-xs-b4ip7-clipboard-image-1736445561.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,7)">
+        <span class="ot">Obesidad</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-XMhmy-xs-lxyin-xs-icoxd-xs-tqojg-clipboard-image-1736445570.webp" alt="" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       7 — CHART INTERSTITIAL
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s7">
+    <div class="inter">
+      <h2 class="q-title center">Sabemos cómo mantenerte en forma y saludable a largo plazo</h2>
+      <img class="inter-img" src="https://media.inlead.cloud/uploads/50771/2026-04-17/lg-1NG7j-chatgpt-image-17-de-abr-de-2026-20-26-31.png" alt="">
+      <button class="btn" onclick="go(8)">Continuar</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       8 — CUERPO DESEADO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s8">
+    <h2 class="q-title">Qué tipo de cuerpo te gustaría tener?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,9)">
+        <span class="ot">Delgado</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-zq4io-xs-rqseb-xs-4fia6-xs-n6jqk-clipboard-image-1736445541.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,9)">
+        <span class="ot">En forma</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-lSbca-xs-czils-xs-6srlk-xs-ucbgx-clipboard-image-1736445603-1.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,9)">
+        <span class="ot">Definido</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-f9bjn-xs-69bls-xs-opqex-xs-hgqmo-clipboard-image-1736445620.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,9)">
+        <span class="ot">Marcado</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-IWSJs-xs-yuz3p-xs-w8lh1-xs-dra36-clipboard-image-1736445637.webp" alt="" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       9 — ÁREAS (multi)
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s9">
+    <h2 class="q-title">En qué áreas de tu cuerpo quieres enfocarte?</h2>
+    <div class="opt-list">
+      <div class="opt-multi" onclick="tog(this)">
+        <img class="ml-img" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-xG3zB-xs-i1fej-xs-kutqp-xs-qvpmn-clipboard-image-1736445875.webp" alt="" onerror="this.style.display='none'">
+        <span class="ml-t">Brazos</span><div class="ml-chk"></div>
+      </div>
+      <div class="opt-multi" onclick="tog(this)">
+        <img class="ml-img" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-TvzvX-xs-zjd1n-xs-g5hj9-xs-vfg3h-clipboard-image-1736445890.webp" alt="" onerror="this.style.display='none'">
+        <span class="ml-t">Pecho</span><div class="ml-chk"></div>
+      </div>
+      <div class="opt-multi" onclick="tog(this)">
+        <img class="ml-img" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-Miyth-xs-beawy-xs-vcz65-xs-5m1n2-clipboard-image-1736445900.webp" alt="" onerror="this.style.display='none'">
+        <span class="ml-t">Abdomen</span><div class="ml-chk"></div>
+      </div>
+      <div class="opt-multi" onclick="tog(this)">
+        <img class="ml-img" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-Xu44b-xs-0ceiq-xs-axm4g-xs-oicuw-clipboard-image-1736445909.webp" alt="" onerror="this.style.display='none'">
+        <span class="ml-t">Piernas</span><div class="ml-chk"></div>
+      </div>
+      <div class="opt-multi" onclick="tog(this)">
+        <img class="ml-img" src="https://media.inlead.cloud/uploads/50771/2026-04-24/md-ih0NG-xs-sabb0-xs-ml2yi-xs-yeoap-clipboard-image-1736445923.webp" alt="" onerror="this.style.display='none'">
+        <span class="ml-t">Espalda</span><div class="ml-chk"></div>
+      </div>
+    </div>
+    <button class="btn" onclick="go(10)">Continuar</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       10 — FIGURA + HACE CUÁNTO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s10">
+    <h2 class="q-title">Hace cuánto tiempo te sentiste en tu mejor forma?</h2>
+    <div class="fig-row">
+      <div class="fig-col">
+        <img src="https://media.inlead.cloud/uploads/50771/2026-04-24/sm-Kltxv-sm-wvct0-sm-srv4m-sm-5phvr-clipboard-image-1736446399.webp" alt="">
+      </div>
+      <div class="fig-btns">
+        <button class="fig-btn" onclick="pickFig(this,11)">Hace 0 a 6 meses</button>
+        <button class="fig-btn" onclick="pickFig(this,11)">Hace 7 a 12 meses</button>
+        <button class="fig-btn" onclick="pickFig(this,11)">Hace 1 a 3 años</button>
+        <button class="fig-btn" onclick="pickFig(this,11)">Hace más de 3 años</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       11 — METABOLISMO INTERSTITIAL
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s11">
+    <div class="inter">
+      <h2 class="q-title center">El 68% de los cambios de peso están influenciados por tu metabolismo</h2>
+      <p class="inter-txt" style="margin-bottom:16px">Pero hay buenas noticias: tú tienes el control! Al gestionar tu ingesta calórica diaria, tu gasto y tu actividad, puedes alcanzar tus objetivos.</p>
+      <img class="inter-img" src="https://media.inlead.cloud/uploads/50771/2026-04-17/lg-UWfbl-lg-nqjwo-lg-7348p-lg-s289f-frame-689.webp" alt="">
+      <button class="btn" onclick="go(12)">Continuar</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       12 — QUÉ TE DESCRIBE
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s12">
+    <h2 class="q-title">Qué es lo que más te describe?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,13)"><span class="ot">Me cuesta ganar músculo</span><span class="oe">🙄</span></div>
+      <div class="opt-row" onclick="pick(this,13)"><span class="ot">Gano y pierdo peso sin esfuerzo</span><span class="oe">💪</span></div>
+      <div class="opt-row" onclick="pick(this,13)"><span class="ot">Subo de peso fácilmente, pero me cuesta bajarlo</span><span class="oe">😤</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       13 — NOMBRE
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s13">
+    <h2 class="q-title center">Como te puedo llamar?</h2>
+    <input class="n-input" id="nameIn" type="text" placeholder="Escribe tu nombre aquí..." oninput="onName(this.value)">
+    <button class="btn off" id="nameBtn" onclick="submitName()">Enviar</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       14 — CONOCIMIENTO AYUNO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s14">
+    <h2 class="q-title">Qué sabes sobre el ayuno intermitente?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,15)"><span class="ot">No sé nada</span><span class="oe">🤷</span></div>
+      <div class="opt-row" onclick="pick(this,15)"><span class="ot">He escuchado un poco</span><span class="oe">🙋</span></div>
+      <div class="opt-row" onclick="pick(this,15)"><span class="ot">Sé bastante</span><span class="oe">😎</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       15 — VIDEO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s15">
+    <h2 class="q-title" id="vtitle">mira el video de la Nutri Claudia a continuación y entiende cómo funcionará todo 👇🏻</h2>
+    <div style="width:100%;background:#111;border-radius:14px;overflow:hidden">
+      <div style="width:100%;aspect-ratio:9/16;background:#1a1a1a;display:flex;align-items:center;justify-content:center">
+        <div style="width:54px;height:54px;border:2.5px solid rgba(255,255,255,.5);border-radius:50%;display:flex;align-items:center;justify-content:center">
+          <div style="border-style:solid;border-width:9px 0 9px 16px;border-color:transparent transparent transparent rgba(255,255,255,.7);margin-left:4px"></div>
+        </div>
+      </div>
+    </div>
+    <button class="btn" onclick="go(16)" style="margin-top:14px">Continuar</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       16 — DESAYUNO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s16">
+    <h2 class="q-title">A qué hora sueles desayunar?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,17)">
+        <span class="ot">Entre las 6 y las 8 de la mañana</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-17/md-GTdQa-xs-3pwlm-vw9g3-clipboard-image-1735910142.png" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,17)">
+        <span class="ot">Entre las 8 y las 10 de la mañana</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-17/md-qz4dA-xs-zuccu-snkbt-clipboard-image-1735910146.png" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,17)">
+        <span class="ot">Entre las 10 y el mediodía</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-17/md-8bj7n-xs-ddyru-uijao-clipboard-image-1735910150.png" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,17)">
+        <span class="ot">No suelo desayunar</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-17/md-gnKcm-xs-xdjlj-vgo3d-clipboard-image-1735910154.png" alt="" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       17 — ALMUERZO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s17">
+    <h2 class="q-title">A qué hora sueles almorzar?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,18)">
+        <span class="ot">Entre las 10 y las 12</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-07/md-7lIrm-019092a4-a26a-4ba3-a17b-9f2755cef9e5.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,18)">
+        <span class="ot">Entre las 12 y las 14</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-07/md-0mvTc-b63d88de-8b60-4b4d-a747-f9b0f8a9daea.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,18)">
+        <span class="ot">Entre las 14 y las 16</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-07/md-3RzrB-1c1fb8b4-2631-49d8-a583-fe60a6fbeca0.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,18)">
+        <span class="ot">Suelo saltarme el almuerzo</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-07/md-BjcqL-db5f0fab-bd58-42a9-9375-bd0c8730b60b-1.png" alt="" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       18 — CENA
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s18">
+    <h2 class="q-title">A qué hora sueles cenar?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,19)">
+        <span class="ot">Entre las 16 y las 18</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-07/md-HWXJO-d024ec17-2d02-433f-97ff-86001eacb3ab.png" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,19)">
+        <span class="ot">Entre las 18 y las 20</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-07/md-CpinC-893f9e97-8daa-45bc-9945-f7b5b81f2a42.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,19)">
+        <span class="ot">Entre las 20 y las 22</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-07/md-W5dEp-6b51210d-61cf-47fa-b168-d6bf273aa790.webp" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="opt-row" onclick="pick(this,19)">
+        <span class="ot">Suelo saltarme la cena</span>
+        <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-07/md-BjcqL-db5f0fab-bd58-42a9-9375-bd0c8730b60b-1.png" alt="" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       19 — RESTRICCIONES (multi)
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s19">
+    <h2 class="q-title">Tienes alguna restricción alimentaria?</h2>
+    <div class="opt-list">
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🍼</span><span class="ml-t">Sin lactosa</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🍩</span><span class="ml-t">Sin gluten</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🥦</span><span class="ml-t">Vegetariano</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🌱</span><span class="ml-t">Vegano</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🐟</span><span class="ml-t">No consumo pescado</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">❌</span><span class="ml-t">Ninguna de las anteriores</span><div class="ml-chk"></div></div>
+    </div>
+    <button class="btn" onclick="go(20)">Continuar</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       20 — ALIMENTOS QUE TE GUSTAN
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s20">
+    <h2 class="q-title">Elige los alimentos que te gustan</h2>
+    <div class="food-section">
+      <div class="food-cat">🥦 Verduras</div>
+      <div class="food-chips">
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Tomate</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Pepino</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Cebolla</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Pimiento</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Zanahoria</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Lechuga</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Espinaca</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Champiñones</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Calabacín</span>
+      </div>
+    </div>
+    <div class="food-section">
+      <div class="food-cat">🍞 Granos y panes</div>
+      <div class="food-chips">
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Arroz</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Espagueti</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Pan integral</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Lentejas</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Avena</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Quinoa</span>
+      </div>
+    </div>
+    <div class="food-section">
+      <div class="food-cat">🥩 Carnes y huevos</div>
+      <div class="food-chips">
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Huevo</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Pollo</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Jamón</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Pechuga de pavo</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Carne de res</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Carne de cerdo</span>
+      </div>
+    </div>
+    <div class="food-section">
+      <div class="food-cat">🐟 Pescados y mariscos</div>
+      <div class="food-chips">
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Salmón</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Atún</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Tilapia</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Camarón</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Trucha</span>
+      </div>
+    </div>
+    <div class="food-section">
+      <div class="food-cat">🥛 Lácteos</div>
+      <div class="food-chips">
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Leche</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Mozzarella</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Yogur</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Queso</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Tofu</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Queso crema</span>
+      </div>
+    </div>
+    <div class="food-section">
+      <div class="food-cat">🍎 Frutas</div>
+      <div class="food-chips">
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Aguacate</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Manzana</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Pera</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Banana</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Mango</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Naranja</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Fresa</span>
+      </div>
+    </div>
+    <button class="btn" onclick="go(21)" style="margin-top:8px">Continuar</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       21 — COCINAR/RESTAURANTE
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s21">
+    <h2 class="q-title">Prefieres cocinar, comer fuera o pedir comida?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,22)"><span class="ot">Cocinar en casa</span><span class="oe">🍳</span></div>
+      <div class="opt-row" onclick="pick(this,22)"><span class="ot">Prefiero ir a un restaurante</span><span class="oe">🍽️</span></div>
+      <div class="opt-row" onclick="pick(this,22)"><span class="ot">Me gusta pedir comida</span><span class="oe">🍟</span></div>
+      <div class="opt-row" onclick="pick(this,22)"><span class="ot">Hago un poco de todo</span><span class="oe">😀</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       22 — FIN DE SEMANA AYUNO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s22">
+    <h2 class="q-title">Necesitas hacer una pausa en el ayuno durante el fin de semana?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,23)"><span class="ot">Claro que sí! El fin de semana es para disfrutar</span><span class="oe">👌</span></div>
+      <div class="opt-row" onclick="pick(this,23)"><span class="ot">No paro ni en el fin de semana!</span><span class="oe">💪</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       23 — FRECUENCIA EJERCICIO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s23">
+    <h2 class="q-title">Con qué frecuencia haces ejercicio?</h2>
+    <div class="fig-row">
+      <div class="fig-col">
+        <img src="https://media.inlead.cloud/uploads/50771/2026-04-24/sm-xSyfD-sm-d27jh-sm-193cb-sm-chd7w-clipboard-image-1736446430.webp" alt="">
+      </div>
+      <div class="fig-btns">
+        <button class="fig-btn" onclick="pickFig(this,24)">Casi todos los días</button>
+        <button class="fig-btn" onclick="pickFig(this,24)">Varias veces por semana</button>
+        <button class="fig-btn" onclick="pickFig(this,24)">Varias veces al mes</button>
+        <button class="fig-btn" onclick="pickFig(this,24)">Nunca</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       24 — RUTINA DE TRABAJO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s24">
+    <h2 class="q-title">Cómo es tu rutina de trabajo?</h2>
+    <div class="fig-row">
+      <div class="fig-col">
+        <img src="https://media.inlead.cloud/uploads/50771/2026-04-24/sm-kBjPX-sm-ltrs5-sm-9un7x-sm-8r6yg-clipboard-image-1736446442.webp" alt="">
+      </div>
+      <div class="fig-btns">
+        <button class="fig-btn" onclick="pickFig(this,25)">De 09:00 a 18:00</button>
+        <button class="fig-btn" onclick="pickFig(this,25)">Turnos nocturnos</button>
+        <button class="fig-btn" onclick="pickFig(this,25)">Mi horario es flexible</button>
+        <button class="fig-btn" onclick="pickFig(this,25)">Estoy jubilado</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       25 — DÍA A DÍA
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s25">
+    <h2 class="q-title">Cómo describes tu día a día?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,26)"><span class="ot">Paso la mayor parte del día sentado</span><span class="oe">💻</span></div>
+      <div class="opt-row" onclick="pick(this,26)"><span class="ot">Paso parte del día sentado y parte caminando</span><span class="oe">🪑</span></div>
+      <div class="opt-row" onclick="pick(this,26)"><span class="ot">Paso todo el día de pie</span><span class="oe">🚶</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       26 — ESCALERAS
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s26">
+    <h2 class="q-title">Te falta el aire después de subir un tramo de escaleras?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,27)"><span class="ot">Me falta tanto el aire que no puedo hablar</span><span class="oe">🥵</span></div>
+      <div class="opt-row" onclick="pick(this,27)"><span class="ot">Me falta un poco el aire, pero puedo hablar</span><span class="oe">💨</span></div>
+      <div class="opt-row" onclick="pick(this,27)"><span class="ot">Me siento bien después de un tramo de escaleras</span><span class="oe">🙂</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       27 — FRECUENCIA CAMINAR
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s27">
+    <h2 class="q-title">Con qué frecuencia sales a caminar?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,28)"><span class="ot">Casi todos los días</span><span class="oe">😎</span></div>
+      <div class="opt-row" onclick="pick(this,28)"><span class="ot">3 a 4 veces por semana</span><span class="oe">💪</span></div>
+      <div class="opt-row" onclick="pick(this,28)"><span class="ot">1 a 2 veces por semana</span><span class="oe">🙂</span></div>
+      <div class="opt-row" onclick="pick(this,28)"><span class="ot">Más de una vez al mes</span><span class="oe">👍</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       28 — HORAS DE SUEÑO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s28">
+    <h2 class="q-title">Cuántas horas sueles dormir?</h2>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,29)"><span class="ot">Duermo poco (menos de 5 horas)</span></div>
+      <div class="opt-row" onclick="pick(this,29)"><span class="ot">Duermo algo (5-6 horas)</span></div>
+      <div class="opt-row" onclick="pick(this,29)"><span class="ot">Duermo bien (7-8 horas)</span></div>
+      <div class="opt-row" onclick="pick(this,29)"><span class="ot">Me gusta dormir más (más de 8 horas)</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       29 — CONSUMO DE AGUA (figura)
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s29">
+    <h2 class="q-title">Cuál es tu consumo diario de agua?</h2>
+    <div class="fig-row">
+      <div class="fig-col">
+        <img src="https://media.inlead.cloud/uploads/50771/2026-04-24/sm-YIFfi-sm-rjq96-sm-cz7kf-sm-2aecv-clipboard-image-1736446474.webp" alt="">
+      </div>
+      <div class="fig-btns">
+        <button class="fig-btn" onclick="pickFig(this,30)">Solo tomo café o té</button>
+        <button class="fig-btn" onclick="pickFig(this,30)">Alrededor de 2 vasos</button>
+        <button class="fig-btn" onclick="pickFig(this,30)">De 2 a 6 vasos</button>
+        <button class="fig-btn" onclick="pickFig(this,30)">Más de 6 vasos</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       30 — HÁBITOS (multi)
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s30">
+    <h2 class="q-title">Tienes alguno de estos hábitos que podrían estar afectando tu vida?</h2>
+    <div class="opt-list">
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">💤</span><span class="ml-t">Como tarde por la noche</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🍫</span><span class="ml-t">No puedo dejar de comer dulces</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🥤</span><span class="ml-t">Me encantan los refrescos</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🧂</span><span class="ml-t">Me gustan mucho los alimentos grasosos o salados</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">❌</span><span class="ml-t">Ninguna de las anteriores</span><div class="ml-chk"></div></div>
+    </div>
+    <button class="btn" onclick="go(31)">Continuar</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       31 — PROBLEMAS ARTICULACIONES (multi)
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s31">
+    <h2 class="q-title">Tienes alguno de estos problemas?</h2>
+    <div class="opt-list">
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🦵</span><span class="ml-t">Rodillas sensibles</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🫁</span><span class="ml-t">Espalda sensible</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">❌</span><span class="ml-t">Ninguna de las anteriores</span><div class="ml-chk"></div></div>
+    </div>
+    <button class="btn" onclick="go(32)">Continuar</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       32 — EVENTOS QUE SUBISTE PESO (multi)
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s32">
+    <h2 class="q-title">Alguno de estos eventos hizo que subieras de peso en los últimos años?</h2>
+    <div class="opt-list">
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">👰</span><span class="ml-t">Matrimonio o relación</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">😓</span><span class="ml-t">Rutina ocupada con trabajo o familia</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">💰</span><span class="ml-t">Dificultades económicas</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🏥</span><span class="ml-t">Lesión o incapacidad</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">😖</span><span class="ml-t">Estrés o problemas de salud mental</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🧓</span><span class="ml-t">Metabolismo más lento debido a la edad</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🩺</span><span class="ml-t">Complicaciones después de tratamientos</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">❌</span><span class="ml-t">Ninguna de las anteriores</span><div class="ml-chk"></div></div>
+    </div>
+    <button class="btn" onclick="go(33)">Continuar</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       33 — ROSTRO INTERSTITIAL
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s33">
+    <div class="inter">
+      <h2 class="q-title center">No es solo tu cuerpo! Mira cómo el ayuno puede cambiar tu rostro</h2>
+      <p class="inter-txt" style="margin-bottom:16px">El ayuno ayuda a reducir la grasa y la hinchazón del rostro, haciendo que tu piel luzca más joven y saludable.</p>
+      <img class="inter-img" src="https://media.inlead.cloud/uploads/50771/2026-04-24/lg-J9ukM-lg-vfwny-p45l9-clipboard-image-1746129391.png" alt="">
+      <button class="btn" onclick="go(34)">Continuar</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       34 — PESO OBJETIVO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s34">
+    <h2 class="q-title center">Cuántos kilos quieres perder?</h2>
+    <div class="slide-wrap">
+      <div class="slide-val"><span id="gw">10</span> <span class="slide-unit">kg</span></div>
+      <input type="range" min="3" max="50" value="10" step="1" oninput="document.getElementById('gw').textContent=this.value" id="gwSlider">
+      <div class="slide-lbl"><span>3 kg</span><span>50 kg</span></div>
+    </div>
+    <button class="btn" onclick="go(35)">Confirmar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       35 — ALTURA
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s35">
+    <h2 class="q-title center">Cuánto mides?</h2>
+    <div class="slide-wrap">
+      <div class="slide-val"><span id="hv">170</span> <span class="slide-unit">cm</span></div>
+      <input type="range" min="140" max="210" value="170" step="1" oninput="document.getElementById('hv').textContent=this.value">
+      <div class="slide-lbl"><span>140 cm</span><span>210 cm</span></div>
+    </div>
+    <button class="btn" onclick="go(36)">Continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       36 — PESO ACTUAL
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s36">
+    <h2 class="q-title center">Cuánto pesas actualmente?</h2>
+    <div class="slide-wrap">
+      <div class="slide-val"><span id="cw">80</span> <span class="slide-unit">kg</span></div>
+      <input type="range" min="40" max="200" value="80" step="1" oninput="document.getElementById('cw').textContent=this.value">
+      <div class="slide-lbl"><span>40 kg</span><span>200 kg</span></div>
+    </div>
+    <button class="btn" onclick="go(37)">Continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       37 — LOADING
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s37">
+    <div class="load-wrap">
+      <div class="load-t">Analizando tu perfil...</div>
+      <div class="spinner" id="sp1"></div>
+      <div class="ck-list">
+        <div class="ck-row"><div class="ck-ic" id="ck1"></div>Calculando tu metabolismo basal</div>
+        <div class="ck-row"><div class="ck-ic" id="ck2"></div>Diseñando ventana de ayuno óptima</div>
+        <div class="ck-row"><div class="ck-ic" id="ck3"></div>Ajustando plan nutricional</div>
+        <div class="ck-row"><div class="ck-ic" id="ck4"></div>Personalizando tu cronograma</div>
+        <div class="ck-row"><div class="ck-ic" id="ck5"></div>Generando tu plan completo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       38 — RESULTADOS
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s38">
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%">
+      <div class="badge">✅ Tu plan está listo</div>
+      <h2 class="q-title center">Tu plan personalizado<br>está listo!</h2>
+      <div class="res-card">
+        <div class="res-n" id="resKg">8</div>
+        <div class="res-u">kg en 21 días</div>
+        <div class="res-l">Pérdida de peso proyectada</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="sn">16:8</div><div class="sl">Tu protocolo de ayuno</div></div>
+        <div class="stat-box"><div class="sn">21</div><div class="sl">Días de tu plan</div></div>
+      </div>
+      <div class="info-box">
+        <p>Basado en tu perfil, el <strong>método Ayuno Bariatrico</strong> es la estrategia más efectiva para ti.</p>
+      </div>
+      <button class="btn" onclick="showSales()">Ver mi plan completo →</button>
+    </div>
+  </div>
+
+</div><!-- end #shell -->
+
+<!-- ══════════════════════════════════════════
+     SALES PAGE
+══════════════════════════════════════════ -->
+<div id="sp">
+  <div class="sp-top"><span>🔥 <em>AYUNO</em> RESET</span></div>
+  <div class="sp-hero">
+    <h1>Tu plan de <span>21 días</span> para perder peso está listo</h1>
+    <p>Descubre el método de ayuno que ya transformó a más de 45,000 personas en toda América Latina</p>
+  </div>
+  <div class="sp-vid">
+    <div class="sp-vid-inner"><div class="play-lg"></div></div>
+  </div>
+  <div class="sec">
+    <h3 class="sec-t">Observa cambios visibles después de 21 días</h3>
+    <img style="width:100%;border-radius:12px;display:block" src="https://media.inlead.cloud/uploads/50771/2026-04-23/lg-FFV8P-chatgpt-image-23-de-abr-de-2026-21-36-41.png" alt="">
+  </div>
+  <div class="div"></div>
+  <div class="sec">
+    <h3 class="sec-t">Tu plan incluye:</h3>
+    <div class="bi"><div class="bi-ic">📅</div><div><h4>Plan 21 días día a día</h4><p>Guía completa con qué comer y cuándo ayunar</p></div></div>
+    <div class="bi"><div class="bi-ic">🔥</div><div><h4>Protocolo de ayuno personalizado</h4><p>Diseñado para tu cuerpo y horarios específicos</p></div></div>
+    <div class="bi"><div class="bi-ic">🥗</div><div><h4>Recetas y menú completo</h4><p>+50 recetas deliciosas que aceleran la quema de grasa</p></div></div>
+    <div class="bi"><div class="bi-ic">📊</div><div><h4>Seguimiento de progreso</h4><p>Herramientas para medir tu avance semana a semana</p></div></div>
+    <div class="bi"><div class="bi-ic">🧠</div><div><h4>Control mental del hambre</h4><p>Técnicas para vencer ansiedad y antojos</p></div></div>
+    <div class="bi"><div class="bi-ic">♾️</div><div><h4>Acceso de por vida</h4><p>Una vez que compras, el plan es tuyo para siempre</p></div></div>
+  </div>
+  <div class="div"></div>
+  <div class="sec">
+    <h3 class="sec-t">Mira las historias de éxito</h3>
+    <div class="testi"><div class="st">★★★★★</div><p class="tt">"Perdí 9 kilos en 21 días siguiendo el plan. Nunca pensé que sería tan fácil."</p><div class="ta">María G. — 34 años, México</div></div>
+    <div class="testi"><div class="st">★★★★★</div><p class="tt">"Llevaba 3 años intentando bajar de peso. Con este método bajé 12 kilos en un mes."</p><div class="ta">Carlos M. — 41 años, Colombia</div></div>
+    <div class="testi"><div class="st">★★★★★</div><p class="tt">"Sin pasar hambre, sin contar calorías. ¡Simplemente funciona!"</p><div class="ta">Andrea P. — 28 años, Argentina</div></div>
+    <div class="testi"><div class="st">★★★★★</div><p class="tt">"Tengo hipotiroidismo y bajé 7 kg el primer mes con el plan adaptado."</p><div class="ta">Lucía R. — 38 años, Chile</div></div>
+  </div>
+  <div class="price-sec">
+    <div class="ps-lbl">Plan Ayuno Reset</div>
+    <div class="ps-old">$100.00</div>
+    <div class="ps-new">$9.90</div>
+    <div class="ps-sub">Pago único — acceso de por vida</div>
+    <a class="btn-buy" href="https://pay.hotmart.com/L106046226K?checkoutMode=10" target="_blank">¡QUIERO MI PLAN AHORA!</a>
+    <div class="cd-wrap">
+      <div class="cd-lbl">Tu plan personalizado está reservado por:</div>
+      <div class="cd-t" id="cdt">02:00</div>
+    </div>
+  </div>
+  <div class="trust-row">
+    <div class="tr-item"><div class="ti">🔒</div>Compra SEGURA</div>
+    <div class="tr-item"><div class="ti">✅</div>Satisfacción GARANTIZADA</div>
+    <div class="tr-item"><div class="ti">🛡️</div>Privacidad PROTEGIDA</div>
+  </div>
+  <div class="guar">
+    <div class="gi">🛡️</div>
+    <div>
+      <h4>Garantía de reembolso de 30 días</h4>
+      <p>Si en 30 días no estás 100% satisfecho/a con los resultados, te devolvemos el dinero sin preguntas.</p>
+    </div>
+  </div>
+  <div class="sticky-buy">
+    <a class="btn-buy" href="https://pay.hotmart.com/L106046226K?checkoutMode=10" target="_blank">¡OBTENER MI PLAN POR $9.90!</a>
+  </div>
+  <div class="sp80"></div>
+</div>
+
+<script>
+const TOTAL = 38;
+let cur = 1;
+let uname = '';
+const hist = [1];
+
+function prog(n) {
+  document.getElementById('pf').style.width = Math.max(3, Math.round(n/TOTAL*100)) + '%';
+  const b = document.getElementById('backBtn');
+  n > 1 ? b.classList.add('show') : b.classList.remove('show');
+}
+
+function go(n) {
+  const prev = document.getElementById('s'+cur);
+  const next = document.getElementById('s'+n);
+  if (!next) return;
+  if (prev) prev.classList.remove('active');
+  next.classList.add('active');
+  hist.push(n); cur = n;
+  prog(n);
+  window.scrollTo({top:0, behavior:'smooth'});
+  if (n === 37) startLoad();
+}
+
+function goBack() {
+  if (hist.length <= 1) return;
+  hist.pop();
+  const p = hist[hist.length-1];
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+p).classList.add('active');
+  cur = p; prog(p);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function pick(el, nxt) {
+  const par = el.closest('.opt-list,.gender-grid');
+  if (par) par.querySelectorAll('.opt-row,.g-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  setTimeout(()=>go(nxt), 260);
+}
+
+function pickFig(el, nxt) {
+  el.closest('.fig-btns').querySelectorAll('.fig-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  setTimeout(()=>go(nxt), 260);
+}
+
+function tog(el) { el.classList.toggle('sel'); }
+
+function onName(v) {
+  const btn = document.getElementById('nameBtn');
+  if (v.trim()) { btn.classList.remove('off'); uname = v.trim(); }
+  else btn.classList.add('off');
+}
+
+function submitName() {
+  const v = document.getElementById('nameIn').value.trim();
+  if (!v) return;
+  uname = v;
+  document.getElementById('vtitle').textContent = uname + ' mira el video de la Nutri Claudia a continuación y entiende cómo funcionará todo 👇🏻';
+  go(14);
+}
+
+function startLoad() {
+  const ids = ['ck1','ck2','ck3','ck4','ck5'];
+  let i = 0;
+  const iv = setInterval(()=>{
+    if (i < ids.length) { document.getElementById(ids[i]).classList.add('on'); i++; }
+    else {
+      clearInterval(iv);
+      document.getElementById('sp1').style.display='none';
+      const gw = parseInt(document.getElementById('gwSlider').value)||10;
+      document.getElementById('resKg').textContent = Math.min(gw,12);
+      setTimeout(()=>go(38), 500);
+    }
+  }, 650);
+}
+
+function showSales() {
+  document.getElementById('shell').style.display='none';
+  const s = document.getElementById('sp');
+  s.classList.add('on');
+  window.scrollTo({top:0, behavior:'smooth'});
+  let t=120;
+  const el=document.getElementById('cdt');
+  setInterval(()=>{
+    if(t<=0){el.textContent='00:00';return;}
+    t--;
+    el.textContent=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
+  },1000);
+}
+
+prog(1);
+</script>
+</body>
+</html>
