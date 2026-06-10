@@ -251,7 +251,7 @@ input[type=range]::-webkit-slider-thumb {
 /* FOOD GRID */
 .food-section { margin-bottom: 14px; width: 100%; }
 .food-cat { font-size: 13px; font-weight: 700; color: #6b7280; margin-bottom: 8px; letter-spacing: .3px; }
-.food-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.food-chips { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .food-chip {
   background: #f9fafb; border: 1.5px solid #e5e7eb;
   border-radius: 99px; padding: 7px 14px;
@@ -410,11 +410,11 @@ input[type=range]::-webkit-slider-thumb {
   <div class="step" id="s2">
     <h2 class="q-title">Ayuno intermitente para:</h2>
     <div class="gender-grid">
-      <div class="g-card" onclick="pick(this,3)">
+      <div class="g-card" onclick="pickGender(this,'H',3)">
         <img src="https://media.inlead.cloud/uploads/50771/2026-04-23/md-dZYjd-chatgpt-image-23-de-abr-de-2026-21-45-27.webp" alt="Hombre">
         <div class="g-lbl">Hombre<span class="g-arrow">›</span></div>
       </div>
-      <div class="g-card" onclick="pick(this,3)">
+      <div class="g-card" onclick="pickGender(this,'M',3)">
         <img src="https://media.inlead.cloud/uploads/50771/2026-04-23/md-6bdxE-chatgpt-image-23-de-abr-de-2026-21-49-40.webp" alt="Mujer">
         <div class="g-lbl">Mujer<span class="g-arrow">›</span></div>
       </div>
@@ -792,6 +792,7 @@ input[type=range]::-webkit-slider-thumb {
         <span class="food-chip" onclick="this.classList.toggle('sel')">Queso</span>
         <span class="food-chip" onclick="this.classList.toggle('sel')">Tofu</span>
         <span class="food-chip" onclick="this.classList.toggle('sel')">Queso crema</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">Parmesano</span>
       </div>
     </div>
     <div class="food-section">
@@ -1143,7 +1144,172 @@ input[type=range]::-webkit-slider-thumb {
 const TOTAL = 38;
 let cur = 1;
 let uname = '';
+let gender = 'H'; // 'H' = Hombre, 'M' = Mujer
 const hist = [1];
+
+const CDN = 'https://media.inlead.cloud/uploads/50771/';
+
+// Gender-specific data
+const G = {
+  H: {
+    age: [
+      '2026-04-24/md-wUjmr-xs-7wrba-xs-al4og-xs-lopxm-clipboard-image-1736445428.webp',
+      '2026-04-24/md-y5Naa-xs-zufda-xs-voi95-xs-r0gp6-clipboard-image-1736445424.webp',
+      '2026-04-24/md-qttJ0-xs-roult-xs-0yfhn-xs-yu1gr-clipboard-image-1736445439.webp',
+      '2026-04-24/md-DlPZO-xs-ywnbf-xs-bz6xs-xs-ti1gn-clipboard-image-1736445449.webp'
+    ],
+    socialImg: '2026-04-24/lg-O5Tbw-lg-a6cfy-lg-i5dy6-lg-lamoy-clipboard-image-1736446376.webp',
+    objetivo: [
+      {t:'Perder peso',    e:'🤙', img:null},
+      {t:'Ponerse en forma', e:'👌', img:null},
+      {t:'Mejorar la salud del corazón', e:'🫀', img:null},
+      {t:'Reducir el estrés', e:'🧘', img:null}
+    ],
+    fisico: [
+      {t:'Delgado',           img:'2026-04-24/md-enDXc-xs-qvhlw-xs-qbvaj-xs-ucbgx-clipboard-image-1736445603.webp'},
+      {t:'Flacidez',          img:'2026-04-24/md-4DyRY-xs-5oe5v-xs-1ckyr-xs-a1yrx-clipboard-image-1736445550.webp'},
+      {t:'Algunos kilos de más', img:'2026-04-24/md-7UfiE-xs-8jqyp-xs-7njqz-xs-b4ip7-clipboard-image-1736445561.webp'},
+      {t:'Obesidad',          img:'2026-04-24/md-XMhmy-xs-lxyin-xs-icoxd-xs-tqojg-clipboard-image-1736445570.webp'}
+    ],
+    cuerpo: [
+      {t:'Delgado', img:'2026-04-24/md-zq4io-xs-rqseb-xs-4fia6-xs-n6jqk-clipboard-image-1736445541.webp'},
+      {t:'En forma', img:'2026-04-24/md-lSbca-xs-czils-xs-6srlk-xs-ucbgx-clipboard-image-1736445603-1.webp'},
+      {t:'Definido', img:'2026-04-24/md-f9bjn-xs-69bls-xs-opqex-xs-hgqmo-clipboard-image-1736445620.webp'},
+      {t:'Marcado', img:'2026-04-24/md-IWSJs-xs-yuz3p-xs-w8lh1-xs-dra36-clipboard-image-1736445637.webp'}
+    ],
+    areas: [
+      {t:'Brazos',   img:'2026-04-24/md-xG3zB-xs-i1fej-xs-kutqp-xs-qvpmn-clipboard-image-1736445875.webp'},
+      {t:'Pecho',    img:'2026-04-24/md-TvzvX-xs-zjd1n-xs-g5hj9-xs-vfg3h-clipboard-image-1736445890.webp'},
+      {t:'Abdomen',  img:'2026-04-24/md-Miyth-xs-beawy-xs-vcz65-xs-5m1n2-clipboard-image-1736445900.webp'},
+      {t:'Piernas',  img:'2026-04-24/md-Xu44b-xs-0ceiq-xs-axm4g-xs-oicuw-clipboard-image-1736445909.webp'},
+      {t:'Espalda',  img:'2026-04-24/md-ih0NG-xs-sabb0-xs-ml2yi-xs-yeoap-clipboard-image-1736445923.webp'}
+    ],
+    figBody:    '2026-04-24/sm-Kltxv-sm-wvct0-sm-srv4m-sm-5phvr-clipboard-image-1736446399.webp',
+    figEjercicio: '2026-04-24/sm-xSyfD-sm-d27jh-sm-193cb-sm-chd7w-clipboard-image-1736446430.webp',
+    figRutina:  '2026-04-24/sm-kBjPX-sm-ltrs5-sm-9un7x-sm-8r6yg-clipboard-image-1736446442.webp',
+    figAgua:    '2026-04-24/sm-YIFfi-sm-rjq96-sm-cz7kf-sm-2aecv-clipboard-image-1736446474.webp',
+    jubilado:   'Estoy jubilado',
+    sentado:    'Paso la mayor parte del día sentado',
+    sentado2:   'Paso parte del día sentado y parte caminando'
+  },
+  M: {
+    age: [
+      '2026-04-23/md-7i9IB-xs-8azc6-7tqag-clipboard-image-1735857875.png',
+      '2026-04-23/md-2DX6U-xs-zky6r-e8smu-clipboard-image-1735857920.png',
+      '2026-04-23/md-YZGsB-xs-ctqtk-xkj9q-clipboard-image-1735857917.png',
+      '2026-04-23/md-jXQkt-xs-gsnfa-0pe8b-clipboard-image-1735857913.png'
+    ],
+    socialImg: '2026-04-17/lg-KcpQP-lg-prcvf-yih7a-3gkuv-image-1375-1.webp',
+    objetivo: [
+      {t:'Perder peso',    e:null, img:'2026-04-17/md-tkA6x-xs-w3i9d-n4gl8-clipboard-image-1735907079.png'},
+      {t:'Ponerse en forma', e:null, img:'2026-04-17/md-6zAK7-xs-kevuk-sng2c-clipboard-image-1735907206.png'},
+      {t:'Mejorar la salud del corazón', e:null, img:'2026-04-17/md-OIfGQ-xs-piiya-snip3-clipboard-image-1735907141.png'},
+      {t:'Reducir el estrés', e:null, img:'2026-04-17/md-l9Lrs-xs-rukie-jbw7q-clipboard-image-1735907131.png'}
+    ],
+    fisico: [
+      {t:'Delgada',                    img:'2026-04-17/md-5EJfT-xs-isnnu-en1uw-clipboard-image-1735858214.png'},
+      {t:'Delgada con grasa localizada', img:'2026-04-17/md-TSMQx-xs-3uryg-81aecd80-b4de-4115-82c9-671a8736b811-1.png'},
+      {t:'Sobrepeso',                  img:'2026-04-17/md-REcrw-xs-lxkn9-68e51770-d668-4852-96c5-a4a5c8e5ec6f-1.png'},
+      {t:'Obesidad',                   img:'2026-04-17/md-fTZmY-xs-xwdu9-dce5fa5d-b733-4f1a-9312-926c7b6a608b-1.png'}
+    ],
+    cuerpo: [
+      {t:'Curvilínea',     img:'2026-04-05/md-IC9FR-5c9d03c0-c285-4493-b7d8-bb7351fc056a.webp'},
+      {t:'Delgada',        img:'2026-04-05/md-O6fxR-91fbf1ff-d170-4a71-9377-81b07173642b.webp'},
+      {t:'Normal',         img:'2026-04-05/md-YyCfw-8fc29a88-5932-4148-b2ac-62224bc74969.webp'},
+      {t:'En forma',       img:'2026-04-17/md-6zAK7-xs-kevuk-sng2c-clipboard-image-1735907206.png'},
+      {t:'Con más volumen', img:'2026-04-05/md-Stz3A-b4c3e3fb-0349-4195-9df8-884272e04800.webp'}
+    ],
+    areas: [
+      {t:'Abdomen', img:'2026-04-17/md-uAqUy-xs-e8zpj-6jtom-clipboard-image-1735908481.png'},
+      {t:'Glúteos', img:'2026-04-17/md-p3xGI-xs-ttzmb-elb3u-clipboard-image-1735908477.png'},
+      {t:'Pecho',   img:'2026-04-17/md-rPSm7-xs-jyjlj-zb8ru-clipboard-image-1735908474.png'},
+      {t:'Piernas', img:'2026-04-17/md-ZYav3-xs-s9sqq-9om14-clipboard-image-1735908469.png'}
+    ],
+    figBody:    '2026-04-17/sm-at2LO-sm-asaxh-hxret-clipboard-image-1735909168.png',
+    figEjercicio: '2026-04-17/sm-pa8a7-sm-ktpwc-o3m9y-clipboard-image-1735930503.png',
+    figRutina:  '2026-04-21/sm-v1Coz-sm-xfhql-94l13-clipboard-image-1735912878.png',
+    figAgua:    '2026-04-24/sm-YIFfi-sm-rjq96-sm-cz7kf-sm-2aecv-clipboard-image-1736446474.webp',
+    jubilado:   'Estoy jubilada',
+    sentado:    'Paso la mayor parte del día sentada',
+    sentado2:   'Paso parte del día sentada y parte caminando'
+  }
+};
+
+function applyGender(g) {
+  gender = g;
+  const d = G[g];
+
+  // Step 3 — edad images
+  const ageImgs = document.querySelectorAll('#s3 .opt-row .oi');
+  d.age.forEach((url,i) => { if(ageImgs[i]) ageImgs[i].src = CDN+url; });
+
+  // Step 4 — social proof image
+  const socImg = document.querySelector('#s4 .inter-img');
+  if(socImg) socImg.src = CDN+d.socialImg;
+
+  // Step 5 — objetivo (rebuild)
+  const s5list = document.querySelector('#s5 .opt-list');
+  if(s5list) {
+    s5list.innerHTML = d.objetivo.map(o=>`
+      <div class="opt-row" onclick="pick(this,6)">
+        <span class="ot">${o.t}</span>
+        ${o.img ? `<img class="oi" src="${CDN+o.img}" alt="" onerror="this.style.display='none'">` : `<span class="oe">${o.e}</span>`}
+      </div>`).join('');
+  }
+
+  // Step 6 — físico (rebuild)
+  const s6list = document.querySelector('#s6 .opt-list');
+  if(s6list) {
+    s6list.innerHTML = d.fisico.map(o=>`
+      <div class="opt-row" onclick="pick(this,7)">
+        <span class="ot">${o.t}</span>
+        <img class="oi" src="${CDN+o.img}" alt="" onerror="this.style.display='none'">
+      </div>`).join('');
+  }
+
+  // Step 8 — cuerpo deseado (rebuild)
+  const s8list = document.querySelector('#s8 .opt-list');
+  if(s8list) {
+    s8list.innerHTML = d.cuerpo.map(o=>`
+      <div class="opt-row" onclick="pick(this,9)">
+        <span class="ot">${o.t}</span>
+        <img class="oi" src="${CDN+o.img}" alt="" onerror="this.style.display='none'">
+      </div>`).join('');
+  }
+
+  // Step 9 — áreas (rebuild)
+  const s9list = document.querySelector('#s9 .opt-list');
+  if(s9list) {
+    s9list.innerHTML = d.areas.map(o=>`
+      <div class="opt-multi" onclick="tog(this)">
+        <img class="ml-img" src="${CDN+o.img}" alt="" onerror="this.style.display='none'">
+        <span class="ml-t">${o.t}</span><div class="ml-chk"></div>
+      </div>`).join('');
+  }
+
+  // Step 10 — body figure image
+  const fig10 = document.querySelector('#s10 .fig-col img');
+  if(fig10) fig10.src = CDN+d.figBody;
+
+  // Step 23 — ejercicio figure
+  const fig23 = document.querySelector('#s23 .fig-col img');
+  if(fig23) fig23.src = CDN+d.figEjercicio;
+
+  // Step 24 — rutina figure + jubilado/a text
+  const fig24 = document.querySelector('#s24 .fig-col img');
+  if(fig24) fig24.src = CDN+d.figRutina;
+  const btns24 = document.querySelectorAll('#s24 .fig-btn');
+  if(btns24[3]) btns24[3].textContent = d.jubilado;
+
+  // Step 25 — día a día gendered text
+  const rows25 = document.querySelectorAll('#s25 .opt-row .ot');
+  if(rows25[0]) rows25[0].textContent = d.sentado;
+  if(rows25[1]) rows25[1].textContent = d.sentado2;
+
+  // Step 29 — agua figure
+  const fig29 = document.querySelector('#s29 .fig-col img');
+  if(fig29) fig29.src = CDN+d.figAgua;
+}
 
 function prog(n) {
   document.getElementById('pf').style.width = Math.max(3, Math.round(n/TOTAL*100)) + '%';
@@ -1171,6 +1337,13 @@ function goBack() {
   document.getElementById('s'+p).classList.add('active');
   cur = p; prog(p);
   window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function pickGender(el, g, nxt) {
+  document.querySelectorAll('.g-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  applyGender(g);
+  setTimeout(()=>go(nxt), 260);
 }
 
 function pick(el, nxt) {
@@ -1232,6 +1405,8 @@ function showSales() {
 }
 
 prog(1);
+// Init with default male content
+applyGender('H');
 </script>
 </body>
 </html>
