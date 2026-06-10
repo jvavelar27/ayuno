@@ -82,6 +82,7 @@ html, body {
 }
 .step.active { display: flex; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
 /* TITLES */
 .q-title {
@@ -1275,23 +1276,7 @@ input[type=range]::-webkit-slider-thumb {
       </foreignObject>
     </div>
     <div class="chart-labels"><span>Hoy</span><span>21 días</span></div>
-    <button class="btn" onclick="go(43)" style="margin-top:20px">Continuar</button>
-  </div>
-
-  <!-- ══════════════════════════════════════════
-       43 — VIDEO FINAL
-  ══════════════════════════════════════════ -->
-  <div class="step" id="s43">
-    <div class="vid-page">
-      <h2 class="q-title center">Tu plan de Ayuno Reset está listo!</h2>
-      <p class="inter-txt" style="text-align:center;margin-bottom:20px">Mira el video a continuación y accede a tu plan ahora mismo</p>
-      <div style="width:100%;background:#111;border-radius:14px;overflow:hidden;margin-bottom:20px">
-        <div style="width:100%;aspect-ratio:9/16;background:#1a1a1a;display:flex;align-items:center;justify-content:center">
-          <span style="color:#555;font-size:14px">Video</span>
-        </div>
-      </div>
-      <button class="btn" onclick="showSales()">Acceder al plan ahora →</button>
-    </div>
+    <button class="btn" onclick="showSales()" style="margin-top:20px">Continuar</button>
   </div>
 
 </div><!-- end #shell -->
@@ -1308,6 +1293,7 @@ input[type=range]::-webkit-slider-thumb {
   <div class="sp-vid">
     <div class="sp-vid-inner"><div class="play-lg"></div></div>
   </div>
+  <div id="sp-below" style="display:none">
   <div class="sec">
     <h3 class="sec-t">Observa cambios visibles después de 21 días</h3>
     <img style="width:100%;border-radius:12px;display:block" src="https://media.inlead.cloud/uploads/50771/2026-04-23/lg-FFV8P-chatgpt-image-23-de-abr-de-2026-21-36-41.png" alt="">
@@ -1357,10 +1343,11 @@ input[type=range]::-webkit-slider-thumb {
     <a class="btn-buy" href="https://pay.hotmart.com/L106046226K?checkoutMode=10" target="_blank">RECIBIR MI PLAN</a>
   </div>
   <div class="sp80"></div>
+  </div><!-- end #sp-below -->
 </div>
 
 <script>
-const TOTAL = 43;
+const TOTAL = 42;
 let cur = 1;
 let uname = '';
 let gender = 'H'; // 'H' = Hombre, 'M' = Mujer
@@ -1682,13 +1669,19 @@ function showSales() {
   const s = document.getElementById('sp');
   s.classList.add('on');
   window.scrollTo({top:0, behavior:'smooth'});
-  let t=480;
-  const el=document.getElementById('cdt');
-  setInterval(()=>{
-    if(t<=0){el.textContent='00:00';return;}
-    t--;
-    el.textContent=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
-  },1000);
+  // Reveal rest of page + checkout button after 4:44 (284s)
+  setTimeout(()=>{
+    const below = document.getElementById('sp-below');
+    below.style.display = '';
+    below.style.animation = 'fadeIn .6s ease';
+    let t=480;
+    const el=document.getElementById('cdt');
+    setInterval(()=>{
+      if(t<=0){el.textContent='00:00';return;}
+      t--;
+      el.textContent=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
+    },1000);
+  }, 284000);
 }
 
 prog(1);
