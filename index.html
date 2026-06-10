@@ -132,7 +132,9 @@ html, body {
 .opt-multi:hover, .opt-multi.sel { border-color: #22c55e; background: #f0fdf4; }
 .opt-multi .ml-em { font-size: 24px; flex-shrink: 0; line-height: 1; min-width: 28px; text-align: center; }
 .opt-multi .ml-img { width: 48px; height: 48px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
-.opt-multi .ml-t { font-size: 14px; font-weight: 500; color: #111; flex: 1; }
+.opt-multi .ml-body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.opt-multi .ml-t { font-size: 14px; font-weight: 600; color: #111; }
+.opt-multi .ml-d { font-size: 12px; color: #6b7280; font-weight: 400; }
 .ml-chk {
   width: 20px; height: 20px;
   border: 2px solid #d1d5db;
@@ -221,7 +223,93 @@ html, body {
 .hero-h .r { color: #ef4444; }
 .hero-sub { font-size: 15px; color: #374151; text-align: center; line-height: 1.5; margin-bottom: 4px; }
 
-/* SLIDERS */
+/* HORIZONTAL RULER */
+.unit-toggle { display:flex; gap:4px; margin:0 auto 16px; background:#f3f4f6; border-radius:24px; padding:4px; width:fit-content; }
+.ut-btn { border:none; background:transparent; border-radius:20px; padding:7px 24px; font-size:14px; font-weight:600; color:#6b7280; cursor:pointer; transition:all .2s; }
+.ut-btn.active { background:#22c55e; color:#fff; }
+.ruler-display { text-align:center; margin:8px 0 12px; }
+.ruler-display .rd-val { font-size:52px; font-weight:900; color:#111; line-height:1; }
+.ruler-display .rd-unit { font-size:22px; color:#9ca3af; font-weight:400; }
+.ruler-outer { position:relative; width:100%; height:80px; overflow:hidden; }
+.ruler-inner {
+  display:flex; align-items:flex-end; height:72px;
+  overflow-x:scroll; overflow-y:hidden; scrollbar-width:none;
+  -ms-overflow-style:none; cursor:grab; user-select:none; position:relative;
+}
+.ruler-inner::-webkit-scrollbar { display:none; }
+.ruler-tick { flex-shrink:0; display:flex; flex-direction:column; align-items:center; }
+.ruler-tick-line { width:1.5px; background:#d1d5db; }
+.ruler-tick.major .ruler-tick-line { height:32px; width:2px; background:#374151; }
+.ruler-tick.mid .ruler-tick-line { height:22px; background:#9ca3af; }
+.ruler-tick.minor .ruler-tick-line { height:12px; }
+.ruler-tick .ruler-num { font-size:11px; color:#9ca3af; margin-top:4px; white-space:nowrap; }
+.ruler-center {
+  position:absolute; bottom:12px; left:50%; transform:translateX(-50%);
+  width:2px; height:52px; background:#22c55e; pointer-events:none; z-index:2;
+}
+.ruler-center::after {
+  content:''; position:absolute; bottom:-7px; left:50%; transform:translateX(-50%);
+  border-left:6px solid transparent; border-right:6px solid transparent; border-top:9px solid #22c55e;
+}
+.ruler-hint { text-align:center; font-size:12px; color:#9ca3af; margin:4px 0 14px; }
+.ruler-baseline { position:absolute; bottom:12px; left:0; right:0; height:1.5px; background:#e5e7eb; pointer-events:none; }
+
+/* INFO BOXES */
+.info-box-blue { background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:14px 16px; margin-top:16px; }
+.info-box-blue strong { color:#1d4ed8; font-size:14px; display:block; margin-bottom:6px; }
+.info-box-blue p { color:#3b82f6; font-size:13px; margin:0; line-height:1.5; }
+.info-box-orange { background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:14px 16px; margin-top:16px; }
+.info-box-orange strong { color:#b45309; font-size:14px; display:block; margin-bottom:6px; }
+.info-box-orange p { color:#92400e; font-size:13px; margin:0; line-height:1.5; }
+.info-box-imc { background:#eff6ff; border-radius:12px; padding:14px 16px; margin-top:0; }
+.info-box-imc p { color:#1e40af; font-size:13px; margin:0; line-height:1.5; }
+
+/* IMC GAUGE */
+.imc-gauge-wrap { width:100%; margin:16px 0 8px; }
+.imc-gauge-meta { margin-bottom:8px; }
+.imc-gauge-meta .imc-label { font-size:13px; font-weight:600; color:#374151; }
+.imc-gauge-meta .imc-range-label { font-size:12px; color:#6b7280; }
+.imc-gauge-bar { position:relative; height:12px; border-radius:99px; background:linear-gradient(to right,#22c55e 0%,#84cc16 30%,#eab308 55%,#f97316 75%,#ef4444 100%); margin:8px 0 6px; }
+.imc-gauge-dot { position:absolute; top:50%; transform:translate(-50%,-50%); width:20px; height:20px; background:#fff; border:3px solid #22c55e; border-radius:50%; }
+.imc-gauge-dot-label { position:absolute; top:-28px; left:50%; transform:translateX(-50%); background:#111; color:#fff; font-size:11px; font-weight:600; padding:3px 8px; border-radius:6px; white-space:nowrap; }
+.imc-gauge-ranges { display:flex; justify-content:space-between; font-size:11px; color:#9ca3af; }
+.imc-body-img { width:180px; display:block; margin:16px auto; }
+.imc-warn { background:#fffbeb; border-radius:12px; padding:14px 16px; margin-top:12px; }
+.imc-warn strong { color:#b45309; font-size:14px; display:block; margin-bottom:6px; }
+.imc-warn p { color:#92400e; font-size:13px; margin:0; line-height:1.5; }
+
+/* EMAIL STEP */
+.email-badge { display:flex; align-items:center; gap:6px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:99px; padding:6px 16px; font-size:13px; color:#166534; font-weight:600; margin:0 auto 20px; width:fit-content; }
+.text-input { width:100%; box-sizing:border-box; border:1.5px solid #e5e7eb; border-radius:12px; padding:14px 16px; font-size:16px; outline:none; transition:border-color .2s; }
+.text-input:focus { border-color:#22c55e; }
+
+/* FINAL LOADING */
+.fload-title { font-size:22px; font-weight:800; color:#111; text-align:center; line-height:1.3; margin-bottom:20px; }
+.fload-prog-wrap { margin-bottom:24px; }
+.fload-prog-row { display:flex; justify-content:space-between; font-size:13px; color:#6b7280; margin-bottom:6px; }
+.fload-prog-pct { font-weight:700; color:#22c55e; }
+.fload-bar { width:100%; height:8px; background:#f3f4f6; border-radius:99px; overflow:hidden; }
+.fload-fill { height:100%; background:#22c55e; border-radius:99px; width:0%; transition:width .4s ease; }
+.fload-sub { font-size:12px; color:#9ca3af; margin-top:6px; text-align:center; }
+.social-title { font-size:20px; font-weight:800; text-align:center; margin:4px 0 4px; color:#111; }
+.social-sub { font-size:13px; color:#6b7280; text-align:center; margin-bottom:16px; }
+.testimonial-slide { width:100%; border-radius:16px; overflow:hidden; }
+.testimonial-slide img { width:100%; display:block; }
+.testimonial-dots { display:flex; justify-content:center; gap:6px; margin-top:12px; }
+.t-dot { width:8px; height:8px; border-radius:50%; background:#d1d5db; cursor:pointer; transition:background .2s; }
+.t-dot.active { background:#22c55e; }
+
+/* WEIGHT CHART */
+.chart-target { text-align:center; margin-bottom:16px; font-size:18px; color:#374151; }
+.chart-target strong { font-size:28px; font-weight:900; color:#22c55e; text-decoration:underline; cursor:pointer; }
+.chart-wrap { position:relative; width:100%; }
+.chart-wrap svg { width:100%; height:auto; display:block; }
+.chart-labels { display:flex; justify-content:space-between; font-size:12px; color:#9ca3af; margin-top:4px; padding:0 2px; }
+.chart-badge-tu { display:inline-block; background:#ef4444; color:#fff; font-size:11px; font-weight:700; padding:3px 8px; border-radius:6px; }
+.chart-badge-val { display:inline-block; background:#f3f4f6; border:1px solid #e5e7eb; color:#374151; font-size:13px; font-weight:700; padding:3px 10px; border-radius:8px; }
+.q-sub { font-size:14px; color:#6b7280; text-align:center; margin:-8px 0 20px; line-height:1.5; }
+
+/* SLIDERS (kept for legacy) */
 .slide-wrap { width: 100%; text-align: center; padding-bottom: 8px; }
 .slide-val { font-size: 52px; font-weight: 900; color: #111; line-height: 1; margin-bottom: 2px; }
 .slide-unit { font-size: 18px; color: #9ca3af; }
@@ -660,7 +748,7 @@ input[type=range]::-webkit-slider-thumb {
         <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-17/md-8bj7n-xs-ddyru-uijao-clipboard-image-1735910150.png" alt="" onerror="this.style.display='none'">
       </div>
       <div class="opt-row" onclick="pick(this,17)">
-        <span class="ot">No suelo desayunar</span>
+        <span class="ot">Suelo saltarme el desayuno</span>
         <img class="oi" src="https://media.inlead.cloud/uploads/50771/2026-04-17/md-gnKcm-xs-xdjlj-vgo3d-clipboard-image-1735910154.png" alt="" onerror="this.style.display='none'">
       </div>
     </div>
@@ -722,12 +810,12 @@ input[type=range]::-webkit-slider-thumb {
   <div class="step" id="s19">
     <h2 class="q-title">Tienes alguna restricción alimentaria?</h2>
     <div class="opt-list">
-      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🍼</span><span class="ml-t">Sin lactosa</span><div class="ml-chk"></div></div>
-      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🍩</span><span class="ml-t">Sin gluten</span><div class="ml-chk"></div></div>
-      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🥦</span><span class="ml-t">Vegetariano</span><div class="ml-chk"></div></div>
-      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🌱</span><span class="ml-t">Vegano</span><div class="ml-chk"></div></div>
-      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🐟</span><span class="ml-t">No consumo pescado</span><div class="ml-chk"></div></div>
-      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">❌</span><span class="ml-t">Ninguna de las anteriores</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🍼</span><div class="ml-body"><span class="ml-t">Sin lactosa</span><span class="ml-d">No consumo alimentos con lactosa</span></div><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🍩</span><div class="ml-body"><span class="ml-t">Sin gluten</span><span class="ml-d">Evito alimentos con gluten</span></div><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🥦</span><div class="ml-body"><span class="ml-t">Vegetariano</span><span class="ml-d">No como carne</span></div><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🌱</span><div class="ml-body"><span class="ml-t">Vegano</span><span class="ml-d">No consumo productos de origen animal</span></div><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🐟️</span><div class="ml-body"><span class="ml-t">No consumo pescado</span><span class="ml-d">No como ningún tipo de pescado</span></div><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">❌️</span><div class="ml-body"><span class="ml-t">Ninguna de las anteriores</span><span class="ml-d">Como casi de todo</span></div><div class="ml-chk"></div></div>
     </div>
     <button class="btn" onclick="go(20)">Continuar</button>
   </div>
@@ -757,7 +845,7 @@ input[type=range]::-webkit-slider-thumb {
         <span class="food-chip" onclick="this.classList.toggle('sel')">Arroz</span>
         <span class="food-chip" onclick="this.classList.toggle('sel')">Espagueti</span>
         <span class="food-chip" onclick="this.classList.toggle('sel')">Pan integral</span>
-        <span class="food-chip" onclick="this.classList.toggle('sel')">Lentejas</span>
+        <span class="food-chip" onclick="this.classList.toggle('sel')">lentejas</span>
         <span class="food-chip" onclick="this.classList.toggle('sel')">Avena</span>
         <span class="food-chip" onclick="this.classList.toggle('sel')">Quinoa</span>
       </div>
@@ -816,10 +904,10 @@ input[type=range]::-webkit-slider-thumb {
   <div class="step" id="s21">
     <h2 class="q-title">Prefieres cocinar, comer fuera o pedir comida?</h2>
     <div class="opt-list">
-      <div class="opt-row" onclick="pick(this,22)"><span class="ot">Cocinar en casa</span><span class="oe">🍳</span></div>
+      <div class="opt-row" onclick="pick(this,22)"><span class="ot">Cocinar en casa</span><span class="oe">🍲</span></div>
       <div class="opt-row" onclick="pick(this,22)"><span class="ot">Prefiero ir a un restaurante</span><span class="oe">🍽️</span></div>
       <div class="opt-row" onclick="pick(this,22)"><span class="ot">Me gusta pedir comida</span><span class="oe">🍟</span></div>
-      <div class="opt-row" onclick="pick(this,22)"><span class="ot">Hago un poco de todo</span><span class="oe">😀</span></div>
+      <div class="opt-row" onclick="pick(this,22)"><span class="ot">Hago un poco de todo</span><span class="oe">🙂</span></div>
     </div>
   </div>
 
@@ -878,7 +966,7 @@ input[type=range]::-webkit-slider-thumb {
     <div class="opt-list">
       <div class="opt-row" onclick="pick(this,26)"><span class="ot">Paso la mayor parte del día sentado</span><span class="oe">💻</span></div>
       <div class="opt-row" onclick="pick(this,26)"><span class="ot">Paso parte del día sentado y parte caminando</span><span class="oe">🪑</span></div>
-      <div class="opt-row" onclick="pick(this,26)"><span class="ot">Paso todo el día de pie</span><span class="oe">🚶</span></div>
+      <div class="opt-row" onclick="pick(this,26)"><span class="ot">Paso todo el día de pie</span><span class="oe">🚶‍➡️</span></div>
     </div>
   </div>
 
@@ -891,6 +979,7 @@ input[type=range]::-webkit-slider-thumb {
       <div class="opt-row" onclick="pick(this,27)"><span class="ot">Me falta tanto el aire que no puedo hablar</span><span class="oe">🥵</span></div>
       <div class="opt-row" onclick="pick(this,27)"><span class="ot">Me falta un poco el aire, pero puedo hablar</span><span class="oe">💨</span></div>
       <div class="opt-row" onclick="pick(this,27)"><span class="ot">Me siento bien después de un tramo de escaleras</span><span class="oe">🙂</span></div>
+      <div class="opt-row" onclick="pick(this,27)"><span class="ot">Puedo subir varios tramos de escaleras fácilmente</span><span class="oe">🚀</span></div>
     </div>
   </div>
 
@@ -939,29 +1028,29 @@ input[type=range]::-webkit-slider-thumb {
   </div>
 
   <!-- ══════════════════════════════════════════
-       30 — HÁBITOS (multi)
+       30 — PROBLEMAS ARTICULACIONES (multi)
   ══════════════════════════════════════════ -->
   <div class="step" id="s30">
+    <h2 class="q-title">Tienes alguno de estos problemas?</h2>
+    <div class="opt-list">
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🦵</span><span class="ml-t">Rodillas sensibles</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🫁</span><span class="ml-t">Espalda sensible</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">❌️</span><span class="ml-t">Ninguna de las anteriores</span><div class="ml-chk"></div></div>
+    </div>
+    <button class="btn" onclick="go(31)">Continuar</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       31 — HÁBITOS (multi)
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s31">
     <h2 class="q-title">Tienes alguno de estos hábitos que podrían estar afectando tu vida?</h2>
     <div class="opt-list">
       <div class="opt-multi" onclick="tog(this)"><span class="ml-em">💤</span><span class="ml-t">Como tarde por la noche</span><div class="ml-chk"></div></div>
       <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🍫</span><span class="ml-t">No puedo dejar de comer dulces</span><div class="ml-chk"></div></div>
       <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🥤</span><span class="ml-t">Me encantan los refrescos</span><div class="ml-chk"></div></div>
       <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🧂</span><span class="ml-t">Me gustan mucho los alimentos grasosos o salados</span><div class="ml-chk"></div></div>
-      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">❌</span><span class="ml-t">Ninguna de las anteriores</span><div class="ml-chk"></div></div>
-    </div>
-    <button class="btn" onclick="go(31)">Continuar</button>
-  </div>
-
-  <!-- ══════════════════════════════════════════
-       31 — PROBLEMAS ARTICULACIONES (multi)
-  ══════════════════════════════════════════ -->
-  <div class="step" id="s31">
-    <h2 class="q-title">Tienes alguno de estos problemas?</h2>
-    <div class="opt-list">
-      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🦵</span><span class="ml-t">Rodillas sensibles</span><div class="ml-chk"></div></div>
-      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">🫁</span><span class="ml-t">Espalda sensible</span><div class="ml-chk"></div></div>
-      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">❌</span><span class="ml-t">Ninguna de las anteriores</span><div class="ml-chk"></div></div>
+      <div class="opt-multi" onclick="tog(this)"><span class="ml-em">❌️</span><span class="ml-t">Ninguna de las anteriores</span><div class="ml-chk"></div></div>
     </div>
     <button class="btn" onclick="go(32)">Continuar</button>
   </div>
@@ -997,81 +1086,208 @@ input[type=range]::-webkit-slider-thumb {
   </div>
 
   <!-- ══════════════════════════════════════════
-       34 — PESO OBJETIVO
+       34 — ALTURA
   ══════════════════════════════════════════ -->
   <div class="step" id="s34">
-    <h2 class="q-title center">Cuántos kilos quieres perder?</h2>
-    <div class="slide-wrap">
-      <div class="slide-val"><span id="gw">10</span> <span class="slide-unit">kg</span></div>
-      <input type="range" min="3" max="50" value="10" step="1" oninput="document.getElementById('gw').textContent=this.value" id="gwSlider">
-      <div class="slide-lbl"><span>3 kg</span><span>50 kg</span></div>
+    <h2 class="q-title center">Cuál es tu altura?</h2>
+    <div class="unit-toggle">
+      <button class="ut-btn active" id="hUnitCm" onclick="setRulerUnit('h','cm',this)">cm</button>
+      <button class="ut-btn" id="hUnitPol" onclick="setRulerUnit('h','pol',this)">pol</button>
     </div>
-    <button class="btn" onclick="go(35)">Confirmar →</button>
+    <div class="ruler-display"><span class="rd-val" id="hVal">180</span><span class="rd-unit" id="hUnit">cm</span></div>
+    <div class="ruler-outer">
+      <div class="ruler-baseline"></div>
+      <div class="ruler-inner" id="hRuler"></div>
+      <div class="ruler-center"></div>
+    </div>
+    <div class="ruler-hint">Arraste para ajustar</div>
+    <button class="btn" onclick="go(35)">Continuar</button>
   </div>
 
   <!-- ══════════════════════════════════════════
-       35 — ALTURA
+       35 — PESO ACTUAL
   ══════════════════════════════════════════ -->
   <div class="step" id="s35">
-    <h2 class="q-title center">Cuánto mides?</h2>
-    <div class="slide-wrap">
-      <div class="slide-val"><span id="hv">170</span> <span class="slide-unit">cm</span></div>
-      <input type="range" min="140" max="210" value="170" step="1" oninput="document.getElementById('hv').textContent=this.value">
-      <div class="slide-lbl"><span>140 cm</span><span>210 cm</span></div>
+    <h2 class="q-title center">Cuál es tu peso actual?</h2>
+    <div class="unit-toggle">
+      <button class="ut-btn active" id="cwUnitKg" onclick="setRulerUnit('cw','kg',this)">kg</button>
+      <button class="ut-btn" id="cwUnitLb" onclick="setRulerUnit('cw','lb',this)">lb</button>
     </div>
-    <button class="btn" onclick="go(36)">Continuar →</button>
+    <div class="ruler-display"><span class="rd-val" id="cwVal">70</span><span class="rd-unit" id="cwUnit">kg</span></div>
+    <div class="ruler-outer">
+      <div class="ruler-baseline"></div>
+      <div class="ruler-inner" id="cwRuler"></div>
+      <div class="ruler-center"></div>
+    </div>
+    <div class="ruler-hint">Arraste para ajustar</div>
+    <div class="info-box-imc"><p><strong style="color:#1d4ed8">Tu IMC está fuera del rango ideal!</strong> Es momento de cuidar tu peso. Vamos a usar tu información para crear un plan personalizado para ti, que acelera tu metabolismo, te ayuda a perder peso, fortalece tu cuerpo y mejora la salud de tu corazón.</p></div>
+    <button class="btn" onclick="go(36)" style="margin-top:16px">Continuar</button>
   </div>
 
   <!-- ══════════════════════════════════════════
-       36 — PESO ACTUAL
+       36 — PESO OBJETIVO
   ══════════════════════════════════════════ -->
   <div class="step" id="s36">
-    <h2 class="q-title center">Cuánto pesas actualmente?</h2>
-    <div class="slide-wrap">
-      <div class="slide-val"><span id="cw">80</span> <span class="slide-unit">kg</span></div>
-      <input type="range" min="40" max="200" value="80" step="1" oninput="document.getElementById('cw').textContent=this.value">
-      <div class="slide-lbl"><span>40 kg</span><span>200 kg</span></div>
+    <h2 class="q-title center">Cuál es tu peso objetivo?</h2>
+    <div class="unit-toggle">
+      <button class="ut-btn active" id="gwUnitKg" onclick="setRulerUnit('gw','kg',this)">kg</button>
+      <button class="ut-btn" id="gwUnitLb" onclick="setRulerUnit('gw','lb',this)">lb</button>
     </div>
-    <button class="btn" onclick="go(37)">Continuar →</button>
+    <div class="ruler-display"><span class="rd-val" id="gwVal">60</span><span class="rd-unit" id="gwUnit">kg</span></div>
+    <div class="ruler-outer">
+      <div class="ruler-baseline"></div>
+      <div class="ruler-inner" id="gwRuler"></div>
+      <div class="ruler-center"></div>
+    </div>
+    <div class="ruler-hint">Arraste para ajustar</div>
+    <div class="info-box-imc"><p><strong style="color:#1d4ed8">Tu IMC está fuera del rango ideal!</strong> Es momento de cuidar tu peso. Vamos a usar tu información para crear un plan personalizado para ti, que acelera tu metabolismo, te ayuda a perder peso, fortalece tu cuerpo y mejora la salud de tu corazón.</p></div>
+    <button class="btn" onclick="go(37)" style="margin-top:16px">Continuar</button>
   </div>
 
   <!-- ══════════════════════════════════════════
-       37 — LOADING
+       37 — EDAD EXACTA
   ══════════════════════════════════════════ -->
   <div class="step" id="s37">
-    <div class="load-wrap">
-      <div class="load-t">Analizando tu perfil...</div>
-      <div class="spinner" id="sp1"></div>
-      <div class="ck-list">
-        <div class="ck-row"><div class="ck-ic" id="ck1"></div>Calculando tu metabolismo basal</div>
-        <div class="ck-row"><div class="ck-ic" id="ck2"></div>Diseñando ventana de ayuno óptima</div>
-        <div class="ck-row"><div class="ck-ic" id="ck3"></div>Ajustando plan nutricional</div>
-        <div class="ck-row"><div class="ck-ic" id="ck4"></div>Personalizando tu cronograma</div>
-        <div class="ck-row"><div class="ck-ic" id="ck5"></div>Generando tu plan completo</div>
+    <h2 class="q-title center">Cuál es tu edad exacta?</h2>
+    <input type="number" class="text-input" id="ageInput" placeholder="Escribe tu edad..." min="10" max="99" oninput="onAgeInput(this.value)">
+    <div class="info-box-blue" style="margin-top:16px">
+      <strong>Vamos a usar esta información para crear tu plan personalizado!</strong>
+      <p>Las personas mayores tienden a tener más grasa corporal que las personas más jóvenes con el mismo IMC, por eso vamos a personalizarlo para ti.</p>
+    </div>
+    <button class="btn off" id="ageBtn" onclick="go(38)" style="margin-top:16px">Continuar</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       38 — RESUMEN IMC
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s38">
+    <h2 class="q-title center">Resumen de tu nivel de condición física</h2>
+    <div class="imc-gauge-wrap">
+      <div class="imc-gauge-meta">
+        <div class="imc-label">Índice de masa corporal (IMC)</div>
+        <div class="imc-range-label">Normal – entre 18,5 y 55</div>
       </div>
+      <div class="imc-gauge-bar">
+        <div class="imc-gauge-dot" style="left:83%">
+          <div class="imc-gauge-dot-label">Por encima de lo normal</div>
+        </div>
+      </div>
+      <div class="imc-gauge-ranges"><span>Delgada</span><span>Normal</span><span>Obesidad</span></div>
+    </div>
+    <img class="imc-body-img" src="https://media.inlead.cloud/uploads/50771/2026-04-21/sm-nVKEt-sm-tajwb-6zfxb-fastingunimealcom-fasting-woman-step-summarysurface-pro-7-1.png" alt="">
+    <div class="imc-warn">
+      <strong>Tu situación es preocupante!</strong>
+      <p>Felicidades por dar el primer paso. Vamos a crear un plan personalizado para acelerar tu metabolismo, aumentar tu fuerza y mejorar tu salud.</p>
+    </div>
+    <button class="btn" onclick="go(39)" style="margin-top:16px">Continuar</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       39 — EVENTO PRÓXIMAMENTE
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s39">
+    <h2 class="q-title center">Tienes algún evento importante próximamente?</h2>
+    <p class="q-sub">Tener algo que esperar puede ser una gran motivación para alcanzar tu objetivo</p>
+    <div class="opt-list">
+      <div class="opt-row" onclick="pick(this,40)"><span class="ot">Vacaciones</span><span class="oe">✈️</span></div>
+      <div class="opt-row" onclick="pick(this,40)"><span class="ot">Boda</span><span class="oe">👰</span></div>
+      <div class="opt-row" onclick="pick(this,40)"><span class="ot">Día festivo</span><span class="oe">🏖️</span></div>
+      <div class="opt-row" onclick="pick(this,40)"><span class="ot">Evento deportivo</span><span class="oe">🏆️</span></div>
+      <div class="opt-row" onclick="pick(this,40)"><span class="ot">Reunión con amigos</span><span class="oe">🎂</span></div>
+      <div class="opt-row" onclick="pick(this,40)"><span class="ot">Cumpleaños</span><span class="oe">🥳</span></div>
+      <div class="opt-row" onclick="pick(this,40)"><span class="ot">Otro</span><span class="oe">🤷</span></div>
+      <div class="opt-row" onclick="pick(this,40)"><span class="ot">No tengo ningún evento</span><span class="oe">❌️</span></div>
     </div>
   </div>
 
   <!-- ══════════════════════════════════════════
-       38 — RESULTADOS
+       40 — EMAIL
   ══════════════════════════════════════════ -->
-  <div class="step" id="s38">
-    <div style="display:flex;flex-direction:column;align-items:center;width:100%">
-      <div class="badge">✅ Tu plan está listo</div>
-      <h2 class="q-title center">Tu plan personalizado<br>está listo!</h2>
-      <div class="res-card">
-        <div class="res-n" id="resKg">8</div>
-        <div class="res-u">kg en 21 días</div>
-        <div class="res-l">Pérdida de peso proyectada</div>
+  <div class="step" id="s40">
+    <div class="email-badge">⏰ Ya casi terminamos!</div>
+    <h2 class="q-title center">Ingresa tu correo electrónico abajo para recibir tu plan personalizado.</h2>
+    <input type="email" class="text-input" id="emailInput" placeholder="Ingresa tu correo electrónico..." oninput="onEmailInput(this.value)">
+    <button class="btn off" id="emailBtn" onclick="startFinalLoad()" style="margin-top:16px">Continuar</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       41 — LOADING FINAL
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s41">
+    <h2 class="fload-title">Creando tu plan personalizado de ayuno</h2>
+    <div class="fload-prog-wrap">
+      <div class="fload-prog-row"><span id="floadStatus">Preparando...</span><span class="fload-prog-pct" id="floadPct">0%</span></div>
+      <div class="fload-bar"><div class="fload-fill" id="floadFill"></div></div>
+      <p class="fload-sub">Estamos preparando tu plan exclusivo y personalizado...</p>
+    </div>
+    <h3 class="social-title">+ de 45 mil personas</h3>
+    <p class="social-sub">ya nos eligieron, mira estos resultados a continuación...</p>
+    <div class="testimonial-slide">
+      <img src="https://media.inlead.cloud/uploads/50771/2026-04-23/lg-KcpQP-sm-qglfj-yurml-clipboard-image-1735844697.png" alt="" style="border-radius:16px">
+    </div>
+    <div class="testimonial-dots">
+      <div class="t-dot active"></div>
+      <div class="t-dot"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       42 — GRÁFICO PERDA DE PESO
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s42">
+    <h2 class="q-title center">El único plan que necesitas para ponerte en forma</h2>
+    <p class="q-sub">Según la información que nos proporcionaste, puedes alcanzar tu peso ideal:</p>
+    <div class="chart-target"><strong id="chartKg">70</strong> kg en 21 días</div>
+    <div class="chart-wrap" style="position:relative">
+      <div style="position:absolute;top:4px;left:4px;background:#ef4444;color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;z-index:2">Tú</div>
+      <div style="position:absolute;top:155px;right:4px;background:#f9fafb;border:1px solid #e5e7eb;color:#374151;font-size:13px;font-weight:700;padding:3px 10px;border-radius:8px;z-index:2" id="chartBadge">70</div>
+      <svg viewBox="0 0 360 190" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ef4444"/>
+            <stop offset="40%" stop-color="#f97316"/>
+            <stop offset="70%" stop-color="#eab308"/>
+            <stop offset="100%" stop-color="#22c55e"/>
+          </linearGradient>
+          <linearGradient id="fg" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ef4444" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#22c55e" stop-opacity="0.08"/>
+          </linearGradient>
+        </defs>
+        <line x1="90" y1="10" x2="90" y2="165" stroke="#f3f4f6" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="180" y1="10" x2="180" y2="165" stroke="#f3f4f6" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="270" y1="10" x2="270" y2="165" stroke="#f3f4f6" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="5" y1="50" x2="355" y2="50" stroke="#f3f4f6" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="5" y1="95" x2="355" y2="95" stroke="#f3f4f6" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="5" y1="140" x2="355" y2="140" stroke="#f3f4f6" stroke-width="1" stroke-dasharray="4 3"/>
+        <path d="M5,18 C50,18 70,35 110,65 C150,95 190,128 240,148 C280,162 320,165 355,167 L355,185 L5,185 Z" fill="url(#fg)"/>
+        <path d="M5,18 C50,18 70,35 110,65 C150,95 190,128 240,148 C280,162 320,165 355,167" fill="none" stroke="url(#cg)" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="5" cy="18" r="5" fill="#ef4444"/>
+        <circle cx="90" cy="48" r="4" fill="#f97316" opacity="0.85"/>
+        <circle cx="180" cy="100" r="4" fill="#eab308" opacity="0.85"/>
+        <circle cx="270" cy="152" r="4" fill="#84cc16" opacity="0.85"/>
+        <circle cx="355" cy="167" r="5" fill="#22c55e"/>
+      </svg>
+      <foreignObject x="0" y="0" width="0" height="0">
+      </foreignObject>
+    </div>
+    <div class="chart-labels"><span>Hoy</span><span>21 días</span></div>
+    <button class="btn" onclick="go(43)" style="margin-top:20px">Continuar</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       43 — VIDEO FINAL
+  ══════════════════════════════════════════ -->
+  <div class="step" id="s43">
+    <div class="vid-page">
+      <h2 class="q-title center">Tu plan de Ayuno Reset está listo!</h2>
+      <p class="inter-txt" style="text-align:center;margin-bottom:20px">Mira el video a continuación y accede a tu plan ahora mismo</p>
+      <div style="width:100%;background:#111;border-radius:14px;overflow:hidden;margin-bottom:20px">
+        <div style="width:100%;aspect-ratio:9/16;background:#1a1a1a;display:flex;align-items:center;justify-content:center">
+          <span style="color:#555;font-size:14px">Video</span>
+        </div>
       </div>
-      <div class="stat-row">
-        <div class="stat-box"><div class="sn">16:8</div><div class="sl">Tu protocolo de ayuno</div></div>
-        <div class="stat-box"><div class="sn">21</div><div class="sl">Días de tu plan</div></div>
-      </div>
-      <div class="info-box">
-        <p>Basado en tu perfil, el <strong>método Ayuno Bariatrico</strong> es la estrategia más efectiva para ti.</p>
-      </div>
-      <button class="btn" onclick="showSales()">Ver mi plan completo →</button>
+      <button class="btn" onclick="showSales()">Acceder al plan ahora →</button>
     </div>
   </div>
 
@@ -1141,7 +1357,7 @@ input[type=range]::-webkit-slider-thumb {
 </div>
 
 <script>
-const TOTAL = 38;
+const TOTAL = 43;
 let cur = 1;
 let uname = '';
 let gender = 'H'; // 'H' = Hombre, 'M' = Mujer
@@ -1228,7 +1444,7 @@ const G = {
     figBody:    '2026-04-17/sm-at2LO-sm-asaxh-hxret-clipboard-image-1735909168.png',
     figEjercicio: '2026-04-17/sm-pa8a7-sm-ktpwc-o3m9y-clipboard-image-1735930503.png',
     figRutina:  '2026-04-21/sm-v1Coz-sm-xfhql-94l13-clipboard-image-1735912878.png',
-    figAgua:    '2026-04-24/sm-YIFfi-sm-rjq96-sm-cz7kf-sm-2aecv-clipboard-image-1736446474.webp',
+    figAgua:    '2026-04-21/sm-jie6i-sm-jwzih-xc1wy-clipboard-image-1735930340.png',
     jubilado:   'Estoy jubilada',
     sentado:    'Paso la mayor parte del día sentada',
     sentado2:   'Paso parte del día sentada y parte caminando'
@@ -1326,7 +1542,9 @@ function go(n) {
   hist.push(n); cur = n;
   prog(n);
   window.scrollTo({top:0, behavior:'smooth'});
-  if (n === 37) startLoad();
+  if (n === 34) initRuler('hRuler', 140, 220, 180, 12, 'hVal');
+  if (n === 35) initRuler('cwRuler', 40, 200, 70, 12, 'cwVal');
+  if (n === 36) initRuler('gwRuler', 30, 180, 60, 12, 'gwVal');
 }
 
 function goBack() {
@@ -1375,19 +1593,85 @@ function submitName() {
   go(14);
 }
 
-function startLoad() {
-  const ids = ['ck1','ck2','ck3','ck4','ck5'];
-  let i = 0;
-  const iv = setInterval(()=>{
-    if (i < ids.length) { document.getElementById(ids[i]).classList.add('on'); i++; }
-    else {
-      clearInterval(iv);
-      document.getElementById('sp1').style.display='none';
-      const gw = parseInt(document.getElementById('gwSlider').value)||10;
-      document.getElementById('resKg').textContent = Math.min(gw,12);
-      setTimeout(()=>go(38), 500);
-    }
-  }, 650);
+function initRuler(id, min, max, defaultVal, tickPx, displayId) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const vw = el.parentElement.offsetWidth || 390;
+  const pad = vw / 2;
+  let html = `<div style="width:${pad}px;flex-shrink:0"></div>`;
+  for (let v = min; v <= max; v++) {
+    const major = v % 10 === 0;
+    const mid = v % 5 === 0 && !major;
+    const cls = major ? 'major' : mid ? 'mid' : 'minor';
+    html += `<div class="ruler-tick ${cls}" style="width:${tickPx}px">
+      <div class="ruler-tick-line"></div>
+      ${major ? `<div class="ruler-num">${v}</div>` : ''}
+    </div>`;
+  }
+  html += `<div style="width:${pad}px;flex-shrink:0"></div>`;
+  el.innerHTML = html;
+  el.scrollLeft = (defaultVal - min) * tickPx;
+  el.addEventListener('scroll', () => {
+    const val = Math.max(min, Math.min(max, Math.round(el.scrollLeft / tickPx) + min));
+    const disp = document.getElementById(displayId);
+    if (disp) disp.textContent = val;
+    window['_r_' + id] = val;
+  });
+  window['_r_' + id] = defaultVal;
+}
+
+function setRulerUnit(which, unit, btn) {
+  btn.closest('.unit-toggle').querySelectorAll('.ut-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const unitEl = document.getElementById(which + 'Unit');
+  if (unitEl) unitEl.textContent = unit;
+  const map = {h:{cm:{min:140,max:220,def:180},pol:{min:55,max:87,def:71}},
+               cw:{kg:{min:40,max:200,def:70},lb:{min:88,max:440,def:154}},
+               gw:{kg:{min:30,max:180,def:60},lb:{min:66,max:396,def:132}}};
+  const cfg = map[which][unit];
+  if (cfg) initRuler(which+'Ruler', cfg.min, cfg.max, cfg.def, 12, which+'Val');
+}
+
+function onAgeInput(v) {
+  const btn = document.getElementById('ageBtn');
+  if (btn) { v && parseInt(v)>0 ? btn.classList.remove('off') : btn.classList.add('off'); }
+}
+
+function onEmailInput(v) {
+  const btn = document.getElementById('emailBtn');
+  if (btn) { v && v.includes('@') ? btn.classList.remove('off') : btn.classList.add('off'); }
+}
+
+function startFinalLoad() {
+  // Navigate to step 41 directly without triggering this function again
+  const prev = document.getElementById('s'+cur);
+  const next = document.getElementById('s41');
+  if (!next) return;
+  if (prev) prev.classList.remove('active');
+  next.classList.add('active');
+  hist.push(41); cur = 41;
+  prog(41);
+  window.scrollTo({top:0, behavior:'smooth'});
+  const fill = document.getElementById('floadFill');
+  const pct = document.getElementById('floadPct');
+  const status = document.getElementById('floadStatus');
+  const phases = ['Preparando...','Analizando tu perfil...','Calculando tu plan...','Generando resultados...'];
+  let p = 0, ph = 0;
+  const iv = setInterval(() => {
+    p += Math.random() * 8 + 3;
+    if (p >= 100) { p = 100; clearInterval(iv); setTimeout(()=>{ go(42); initChartStep(); }, 400); }
+    if (fill) fill.style.width = p + '%';
+    if (pct) pct.textContent = Math.round(p) + '%';
+    if (status && ph < phases.length-1 && p > (ph+1)*25) { ph++; status.textContent = phases[ph]; }
+  }, 250);
+}
+
+function initChartStep() {
+  const gw = window['_r_gwRuler'] || 60;
+  const el = document.getElementById('chartKg');
+  const badge = document.getElementById('chartBadge');
+  if (el) el.textContent = gw;
+  if (badge) badge.textContent = gw;
 }
 
 function showSales() {
