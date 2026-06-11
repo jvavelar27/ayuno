@@ -24,8 +24,27 @@ n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
 n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
 document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1317294203238247');
-fbq('track', 'PageView');
+
+// Extrai fbclid da URL para Advanced Matching (melhora atribuição de anúncios)
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var fbclid = params.get('fbclid');
+  var initData = {};
+  if (fbclid) {
+    // Formato fbc: fb.1.{timestamp}.{fbclid}
+    initData.fbc = 'fb.1.' + Date.now() + '.' + fbclid;
+    try { localStorage.setItem('_fbc', initData.fbc); } catch(e){}
+  } else {
+    // Tenta recuperar fbc salvo anteriormente
+    try { var saved = localStorage.getItem('_fbc'); if (saved) initData.fbc = saved; } catch(e){}
+  }
+  fbq('init', '1317294203238247', initData);
+})();
+
+fbq('track', 'PageView', {
+  content_name: 'Ayuno Reset Quiz',
+  content_category: 'Diet & Weight Loss',
+}, { eventID: 'pv_' + Date.now() });
 </script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1317294203238247&ev=PageView&noscript=1"/></noscript>
 <!-- End Facebook Pixel -->
@@ -1680,9 +1699,52 @@ function onEmailInput(v) {
   if (btn) { v && v.includes('@') ? btn.classList.remove('off') : btn.classList.add('off'); }
 }
 
+// SHA-256 helper para Advanced Matching
+async function sha256hex(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(str).toLowerCase().trim()));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
 function startFinalLoad() {
-  // Facebook Pixel — Lead
-  if (typeof fbq !== 'undefined') fbq('track', 'Lead');
+  // Facebook Pixel — Lead com Advanced Matching completo
+  if (typeof fbq !== 'undefined') {
+    (async () => {
+      try {
+        const email  = (document.getElementById('emailInput')?.value  || '').toLowerCase().trim();
+        const age    = (document.getElementById('ageInput')?.value    || '').trim();
+        const ge     = gender === 'H' ? 'm' : 'f';
+        const parts  = uname.trim().toLowerCase().split(/\s+/);
+        const fn     = parts[0]  || '';
+        const ln     = parts.slice(1).join(' ') || '';
+
+        // Hashes PII (exigido pelo Facebook para Advanced Matching)
+        const hashes = {};
+        if (email) { hashes.em          = await sha256hex(email); }
+        if (ge)    { hashes.ge          = await sha256hex(ge);    }
+        if (fn)    { hashes.fn          = await sha256hex(fn);    }
+        if (ln)    { hashes.ln          = await sha256hex(ln);    }
+        if (email) { hashes.external_id = await sha256hex(email); } // ID estável do usuário
+
+        // Recupera fbc salvo (clique de anúncio)
+        try { const fbc = localStorage.getItem('_fbc'); if (fbc) hashes.fbc = fbc; } catch(_){}
+
+        // Re-init com dados do usuário (Advanced Matching)
+        fbq('init', '1317294203238247', hashes);
+
+        // Evento Lead com custom data
+        const customData = {
+          content_name    : 'Ayuno Reset Quiz',
+          content_category: 'Diet & Weight Loss',
+          value           : 9.90,
+          currency        : 'USD',
+          status          : 'submitted',
+        };
+        if (age) customData.predicted_ltv = parseFloat(age); // age como sinal de LTV
+
+        fbq('track', 'Lead', customData, { eventID: 'lead_' + Date.now() });
+      } catch(_) {}
+    })();
+  }
   // Navigate to step 41 directly without triggering this function again
   const prev = document.getElementById('s'+cur);
   const next = document.getElementById('s41');
