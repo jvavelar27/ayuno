@@ -1,0 +1,7 @@
+name = "ayuno-capi"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# Após deploy, configurar secrets:
+#   npx wrangler secret put FB_PIXEL_ID
+#   npx wrangler secret put FB_ACCESS_TOKEN

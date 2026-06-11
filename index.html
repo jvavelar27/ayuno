@@ -1669,6 +1669,13 @@ function onEmailInput(v) {
 }
 
 function startFinalLoad() {
+  // Dispara Lead com email hasheado (SHA-256) via CAPI
+  const emailVal = (document.getElementById('emailInput') || {}).value || '';
+  if (emailVal && emailVal.includes('@')) {
+    sha256hex(emailVal).then(hash => {
+      sendCAPI('Lead', { em: [hash] }, { content_name: 'Ayuno Reset Quiz' });
+    });
+  }
   // Navigate to step 41 directly without triggering this function again
   const prev = document.getElementById('s'+cur);
   const next = document.getElementById('s41');
@@ -1732,6 +1739,35 @@ function showSales() {
     },1000);
   }, 284000);
 }
+
+// ─────────────────────────────────────────────
+//  FACEBOOK CAPI  (token nunca exposto aqui)
+// ─────────────────────────────────────────────
+const CAPI_ENDPOINT = 'https://ayuno-capi.YOUR_SUBDOMAIN.workers.dev';
+
+async function sha256hex(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str.toLowerCase().trim()));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function sendCAPI(eventName, userData = {}, customData = {}) {
+  try {
+    await fetch(CAPI_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event_name: eventName,
+        event_time: Math.floor(Date.now() / 1000),
+        event_source_url: window.location.href,
+        user_data: userData,
+        custom_data: customData,
+      }),
+    });
+  } catch (_) { /* falha silenciosa — não interrompe o funil */ }
+}
+
+// ViewContent — dispara ao carregar a página
+sendCAPI('ViewContent', {}, { content_name: 'Ayuno Reset Quiz' });
 
 prog(1);
 // Init with default male content
