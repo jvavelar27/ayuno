@@ -25,19 +25,33 @@ n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
 document,'script','https://connect.facebook.net/en_US/fbevents.js');
 
-// Extrai fbclid da URL para Advanced Matching (melhora atribuição de anúncios)
+// ── Helpers de correspondência ──────────────────────────────
 (function(){
-  var params = new URLSearchParams(window.location.search);
-  var fbclid = params.get('fbclid');
+  // 1. external_id persistente (UUID) — identifica o usuário entre sessões
+  try {
+    if (!localStorage.getItem('_uid')) {
+      localStorage.setItem('_uid', ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,
+        c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)));
+    }
+  } catch(e){}
+
+  // 2. fbc — clique de anúncio (fbclid na URL ou salvo anteriormente)
+  try {
+    var fbclid = new URLSearchParams(window.location.search).get('fbclid');
+    if (fbclid) {
+      var fbc = 'fb.1.' + Date.now() + '.' + fbclid;
+      localStorage.setItem('_fbc', fbc);
+    }
+  } catch(e){}
+
+  // 3. fbp — cookie setado automaticamente pelo pixel (_fbp)
+  function getCookie(n){ var m=document.cookie.match('(^| )'+n+'=([^;]+)'); return m?m[2]:null; }
+  window._getCookie = getCookie;
+
+  // Init com fbc + fbp (fbp pode não estar disponível ainda, tentamos no ViewContent também)
   var initData = {};
-  if (fbclid) {
-    // Formato fbc: fb.1.{timestamp}.{fbclid}
-    initData.fbc = 'fb.1.' + Date.now() + '.' + fbclid;
-    try { localStorage.setItem('_fbc', initData.fbc); } catch(e){}
-  } else {
-    // Tenta recuperar fbc salvo anteriormente
-    try { var saved = localStorage.getItem('_fbc'); if (saved) initData.fbc = saved; } catch(e){}
-  }
+  var fbc2 = localStorage.getItem('_fbc'); if (fbc2) initData.fbc = fbc2;
+  var fbp  = getCookie('_fbp');            if (fbp)  initData.fbp = fbp;
   fbq('init', '1317294203238247', initData);
 })();
 
@@ -1618,6 +1632,7 @@ function pickGender(el, g, nxt) {
   document.querySelectorAll('.g-card').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
   applyGender(g);
+  trackViewContent(g);
   setTimeout(()=>go(nxt), 260);
 }
 
@@ -1703,6 +1718,30 @@ function onEmailInput(v) {
 async function sha256hex(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(str).toLowerCase().trim()));
   return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// ViewContent — dispara no step 2 (gênero selecionado)
+var _vcSent = false;
+async function trackViewContent(g) {
+  if (_vcSent || typeof fbq === 'undefined') return;
+  _vcSent = true;
+  try {
+    const ge      = g === 'H' ? 'm' : 'f';
+    const uid     = localStorage.getItem('_uid') || '';
+    const geHash  = await sha256hex(ge);
+    const uidHash = uid ? await sha256hex(uid) : null;
+
+    const matchData = { ge: geHash };
+    if (uidHash)                          matchData.external_id = uidHash;
+    const fbp = (window._getCookie||function(){})('_fbp'); if (fbp) matchData.fbp = fbp;
+    const fbc = localStorage.getItem('_fbc');              if (fbc) matchData.fbc = fbc;
+
+    fbq('init', '1317294203238247', matchData);
+    fbq('track', 'ViewContent', {
+      content_name    : 'Ayuno Reset Quiz',
+      content_category: 'Diet & Weight Loss',
+    }, { eventID: 'vc_' + Date.now() });
+  } catch(_) {}
 }
 
 function startFinalLoad() {
