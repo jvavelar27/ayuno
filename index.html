@@ -1731,15 +1731,12 @@ function startFinalLoad() {
         // Re-init com dados do usuário (Advanced Matching)
         fbq('init', '1317294203238247', hashes);
 
-        // Evento Lead com custom data
+        // Evento Lead com custom data (sem value/currency — fica só no Purchase)
         const customData = {
           content_name    : 'Ayuno Reset Quiz',
           content_category: 'Diet & Weight Loss',
-          value           : 9.90,
-          currency        : 'USD',
           status          : 'submitted',
         };
-        if (age) customData.predicted_ltv = parseFloat(age); // age como sinal de LTV
 
         fbq('track', 'Lead', customData, { eventID: 'lead_' + Date.now() });
       } catch(_) {}
