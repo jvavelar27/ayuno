@@ -17,6 +17,18 @@
 <link rel="dns-prefetch" href="https://scripts.converteai.net">
 <link rel="dns-prefetch" href="https://images.converteai.net">
 <link rel="dns-prefetch" href="https://license.vturb.com">
+<!-- Facebook Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', 'YOUR_PIXEL_ID');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></noscript>
+<!-- End Facebook Pixel -->
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
@@ -1669,13 +1681,8 @@ function onEmailInput(v) {
 }
 
 function startFinalLoad() {
-  // Dispara Lead com email hasheado (SHA-256) via CAPI
-  const emailVal = (document.getElementById('emailInput') || {}).value || '';
-  if (emailVal && emailVal.includes('@')) {
-    sha256hex(emailVal).then(hash => {
-      sendCAPI('Lead', { em: [hash] }, { content_name: 'Ayuno Reset Quiz' });
-    });
-  }
+  // Facebook Pixel — Lead
+  if (typeof fbq !== 'undefined') fbq('track', 'Lead');
   // Navigate to step 41 directly without triggering this function again
   const prev = document.getElementById('s'+cur);
   const next = document.getElementById('s41');
@@ -1740,34 +1747,8 @@ function showSales() {
   }, 284000);
 }
 
-// ─────────────────────────────────────────────
-//  FACEBOOK CAPI  (token nunca exposto aqui)
-// ─────────────────────────────────────────────
-const CAPI_ENDPOINT = 'https://ayuno-capi.YOUR_SUBDOMAIN.workers.dev';
-
-async function sha256hex(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str.toLowerCase().trim()));
-  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
-}
-
-async function sendCAPI(eventName, userData = {}, customData = {}) {
-  try {
-    await fetch(CAPI_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        event_name: eventName,
-        event_time: Math.floor(Date.now() / 1000),
-        event_source_url: window.location.href,
-        user_data: userData,
-        custom_data: customData,
-      }),
-    });
-  } catch (_) { /* falha silenciosa — não interrompe o funil */ }
-}
-
-// ViewContent — dispara ao carregar a página
-sendCAPI('ViewContent', {}, { content_name: 'Ayuno Reset Quiz' });
+// Facebook Pixel — ViewContent ao carregar
+if (typeof fbq !== 'undefined') fbq('track', 'ViewContent');
 
 prog(1);
 // Init with default male content
