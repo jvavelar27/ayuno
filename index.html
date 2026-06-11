@@ -1542,7 +1542,22 @@ function prog(n) {
   n > 1 ? b.classList.add('show') : b.classList.remove('show');
 }
 
+function pauseAllVturb() {
+  document.querySelectorAll('vturb-smartplayer').forEach(el => {
+    try {
+      // Try shadow DOM video element
+      const v = el.shadowRoot && el.shadowRoot.querySelector('video');
+      if (v) { v.pause(); return; }
+      // Try any nested iframe srcdoc video
+      el.querySelectorAll('video').forEach(v => v.pause());
+      // Try custom element API
+      if (typeof el.pause === 'function') el.pause();
+    } catch(e) {}
+  });
+}
+
 function go(n) {
+  pauseAllVturb();
   const prev = document.getElementById('s'+cur);
   const next = document.getElementById('s'+n);
   if (!next) return;
@@ -1558,6 +1573,7 @@ function go(n) {
 }
 
 function goBack() {
+  pauseAllVturb();
   if (hist.length <= 1) return;
   hist.pop();
   const p = hist[hist.length-1];
