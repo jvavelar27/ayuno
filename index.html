@@ -55,8 +55,11 @@ document,'script','https://connect.facebook.net/en_US/fbevents.js');
   fbq('init', '1317294203238247', initData);
 })();
 
-// PageView disparado no final do script (onde sha256hex está disponível)
-// para incluir external_id hasheado e país inferido
+// PageView dispara imediatamente — topo do funil
+fbq('track', 'PageView', {
+  content_name    : 'Ayuno Reset Quiz',
+  content_category: 'Diet & Weight Loss',
+}, { eventID: 'pv_' + Date.now() });
 </script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1317294203238247&ev=PageView&noscript=1"/></noscript>
 <!-- End Facebook Pixel -->
@@ -1847,32 +1850,6 @@ function showSales() {
 prog(1);
 applyGender('H');
 
-// ── PageView enriquecido (dispara aqui onde sha256hex já existe) ──
-(async () => {
-  if (typeof fbq === 'undefined') return;
-  try {
-    const uid     = localStorage.getItem('_uid') || '';
-    const uidHash = uid ? await sha256hex(uid) : null;
-
-    // País inferido pelo idioma do browser (ex: 'es-MX' → 'mx')
-    const lang    = (navigator.language || '').split('-');
-    const country = lang[1] ? lang[1].toLowerCase() : '';
-    const ctHash  = country ? await sha256hex(country) : null;
-
-    const matchData = {};
-    if (uidHash) matchData.external_id = uidHash;
-    if (ctHash)  matchData.country     = ctHash;
-    const fbp = window._getCookie ? window._getCookie('_fbp') : null; if (fbp) matchData.fbp = fbp;
-    const fbc = localStorage.getItem('_fbc');               if (fbc) matchData.fbc = fbc;
-
-    // Re-init com dados enriquecidos antes do PageView
-    fbq('init', '1317294203238247', matchData);
-    fbq('track', 'PageView', {
-      content_name    : 'Ayuno Reset Quiz',
-      content_category: 'Diet & Weight Loss',
-    }, { eventID: 'pv_' + Date.now() });
-  } catch(_) {}
-})();
 </script>
 </body>
 </html>
