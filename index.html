@@ -541,38 +541,41 @@ input[type=range]::-webkit-slider-thumb {
 #site-footer {
   max-width: 430px;
   margin: 0 auto;
-  padding: 24px 16px 40px;
-  border-top: 1px solid #e5e7eb;
-  background: #f9fafb;
+  padding: 12px 16px 32px;
+  border-top: 1px solid #f3f4f6;
 }
-.footer-disclaimer {
-  font-size: 11px;
-  color: #6b7280;
-  line-height: 1.6;
-  margin-bottom: 16px;
-  padding: 12px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-}
-.footer-links {
+.footer-line {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 10px;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 14px;
-}
-.footer-links a {
-  font-size: 12px;
-  color: #6b7280;
-  text-decoration: underline;
-}
-.footer-links span { color: #d1d5db; font-size: 12px; }
-.footer-copy {
+  gap: 4px 8px;
+  font-size: 10px;
+  color: #d1d5db;
   text-align: center;
-  font-size: 11px;
-  color: #9ca3af;
+}
+.footer-line a {
+  color: #d1d5db;
+  text-decoration: none;
+}
+.footer-line a:hover { text-decoration: underline; }
+.footer-line span { color: #e5e7eb; }
+.footer-legal-toggle {
+  display: block;
+  text-align: center;
+  font-size: 10px;
+  color: #e5e7eb;
+  cursor: pointer;
+  margin-top: 6px;
+  user-select: none;
+}
+.footer-legal-text {
+  display: none;
+  font-size: 10px;
+  color: #d1d5db;
   line-height: 1.6;
+  margin-top: 8px;
+  padding: 0 4px;
 }
 
 /* ── MODAIS ── */
@@ -1492,24 +1495,20 @@ input[type=range]::-webkit-slider-thumb {
      FOOTER LEGAL
 ══════════════════════════════════════════ -->
 <footer id="site-footer">
-  <div class="footer-disclaimer">
-    <p>⚠️ <strong>Aviso importante:</strong> Los resultados pueden variar significativamente de una persona a otra. Las historias de éxito y testimonios presentados son experiencias individuales y no garantizan que usted obtenga los mismos resultados. Este programa no es un sustituto del consejo médico profesional. Consulte a su médico antes de iniciar cualquier programa de alimentación o pérdida de peso.</p>
-    <p style="margin-top:8px">Este sitio no pertenece ni está afiliado a Facebook Inc. o Meta Platforms. El nombre FACEBOOK es una marca registrada de META PLATFORMS, INC.</p>
-  </div>
-
-  <div class="footer-links">
-    <a href="#" onclick="openModal('modal-privacy'); return false;">Política de Privacidad</a>
+  <div class="footer-line">
+    <span>© 2025 Ayuno Reset</span>
     <span>·</span>
-    <a href="#" onclick="openModal('modal-terms'); return false;">Términos de Uso</a>
+    <a href="#" onclick="openModal('modal-privacy'); return false;">Privacidad</a>
     <span>·</span>
-    <a href="#" onclick="openModal('modal-cookies'); return false;">Política de Cookies</a>
+    <a href="#" onclick="openModal('modal-terms'); return false;">Términos</a>
+    <span>·</span>
+    <a href="#" onclick="openModal('modal-cookies'); return false;">Cookies</a>
     <span>·</span>
     <a href="mailto:soporte@ayunoreset.com">Contacto</a>
   </div>
-
-  <div class="footer-copy">
-    © 2025 Ayuno Reset · Todos los derechos reservados<br>
-    <small>Al acceder a este sitio usted acepta nuestros Términos de Uso y Política de Privacidad.</small>
+  <span class="footer-legal-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'">Avisos legales ▾</span>
+  <div class="footer-legal-text">
+    Los resultados pueden variar. Este programa no sustituye el consejo médico profesional. Consulte a su médico antes de iniciar cualquier programa de alimentación o pérdida de peso. Este sitio no está afiliado a Meta Platforms, Inc. FACEBOOK es marca registrada de META PLATFORMS, INC. Al usar este sitio acepta nuestros Términos de Uso y Política de Privacidad.
   </div>
 </footer>
 
