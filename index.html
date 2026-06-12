@@ -536,6 +536,83 @@ input[type=range]::-webkit-slider-thumb {
   z-index: 99;
 }
 .sp80 { height: 80px; }
+
+/* ── FOOTER LEGAL ── */
+#site-footer {
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+.footer-disclaimer {
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.footer-links a {
+  font-size: 12px;
+  color: #6b7280;
+  text-decoration: underline;
+}
+.footer-links span { color: #d1d5db; font-size: 12px; }
+.footer-copy {
+  text-align: center;
+  font-size: 11px;
+  color: #9ca3af;
+  line-height: 1.6;
+}
+
+/* ── MODAIS ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 9999;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: #fff;
+  width: 100%;
+  max-width: 430px;
+  max-height: 82vh;
+  overflow-y: auto;
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px 40px;
+  position: relative;
+}
+.modal-box h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; color: #111; }
+.modal-box h3 { font-size: 14px; font-weight: 700; margin: 14px 0 4px; color: #111; }
+.modal-box p  { font-size: 13px; color: #374151; line-height: 1.6; margin-bottom: 6px; }
+.modal-box a  { color: #22c55e; }
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #374151;
+  display: flex; align-items: center; justify-content: center;
+}
 .div { height: 1px; background: #f3f4f6; margin: 0 16px; }
 .small { font-size: 12px; color: #9ca3af; text-align: center; width: 100%; margin-top: 6px; }
 .badge { display: inline-block; background: #f0fdf4; color: #16a34a; font-size: 12px; font-weight: 700; border-radius: 99px; padding: 4px 12px; border: 1px solid #bbf7d0; align-self: flex-start; margin-bottom: 12px; }
@@ -1411,6 +1488,99 @@ input[type=range]::-webkit-slider-thumb {
   </div><!-- end #sp-below -->
 </div>
 
+<!-- ══════════════════════════════════════════
+     FOOTER LEGAL
+══════════════════════════════════════════ -->
+<footer id="site-footer">
+  <div class="footer-disclaimer">
+    <p>⚠️ <strong>Aviso importante:</strong> Los resultados pueden variar significativamente de una persona a otra. Las historias de éxito y testimonios presentados son experiencias individuales y no garantizan que usted obtenga los mismos resultados. Este programa no es un sustituto del consejo médico profesional. Consulte a su médico antes de iniciar cualquier programa de alimentación o pérdida de peso.</p>
+    <p style="margin-top:8px">Este sitio no pertenece ni está afiliado a Facebook Inc. o Meta Platforms. El nombre FACEBOOK es una marca registrada de META PLATFORMS, INC.</p>
+  </div>
+
+  <div class="footer-links">
+    <a href="#" onclick="openModal('modal-privacy'); return false;">Política de Privacidad</a>
+    <span>·</span>
+    <a href="#" onclick="openModal('modal-terms'); return false;">Términos de Uso</a>
+    <span>·</span>
+    <a href="#" onclick="openModal('modal-cookies'); return false;">Política de Cookies</a>
+    <span>·</span>
+    <a href="mailto:soporte@ayunoreset.com">Contacto</a>
+  </div>
+
+  <div class="footer-copy">
+    © 2025 Ayuno Reset · Todos los derechos reservados<br>
+    <small>Al acceder a este sitio usted acepta nuestros Términos de Uso y Política de Privacidad.</small>
+  </div>
+</footer>
+
+<!-- ── MODAL: Política de Privacidad ── -->
+<div class="modal-overlay" id="modal-privacy" onclick="if(event.target===this)closeModal('modal-privacy')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-privacy')">✕</button>
+    <h2>Política de Privacidad</h2>
+    <p><strong>Última actualización:</strong> enero de 2025</p>
+    <p>En <strong>Ayuno Reset</strong> ("nosotros", "nuestro") nos comprometemos a proteger su información personal. Esta política describe cómo recopilamos, usamos y protegemos sus datos cuando visita nuestro sitio web.</p>
+    <h3>1. Información que recopilamos</h3>
+    <p>Recopilamos la información que usted nos proporciona directamente, incluyendo nombre, dirección de correo electrónico y las respuestas al cuestionario de personalización del plan.</p>
+    <h3>2. Cómo usamos su información</h3>
+    <p>Usamos su información para: (a) personalizar su plan de ayuno; (b) enviarle comunicaciones relacionadas con su plan; (c) mejorar nuestros servicios; (d) cumplir con obligaciones legales.</p>
+    <h3>3. Cookies y tecnologías de seguimiento</h3>
+    <p>Utilizamos el Pixel de Meta (Facebook) para medir la efectividad de nuestros anuncios. Esta tecnología recopila datos anónimos sobre las visitas a nuestra página. Puede desactivar las cookies en la configuración de su navegador.</p>
+    <h3>4. Compartir información con terceros</h3>
+    <p>No vendemos su información personal. Podemos compartir datos con proveedores de servicios como Hotmart (procesamiento de pagos) y Meta Platforms (publicidad), quienes están sujetos a sus propias políticas de privacidad.</p>
+    <h3>5. Sus derechos</h3>
+    <p>Tiene derecho a acceder, corregir o eliminar su información personal. Para ejercer estos derechos, contáctenos en <a href="mailto:soporte@ayunoreset.com">soporte@ayunoreset.com</a>.</p>
+    <h3>6. Seguridad</h3>
+    <p>Implementamos medidas técnicas y organizativas para proteger su información contra acceso no autorizado, pérdida o divulgación.</p>
+    <h3>7. Contacto</h3>
+    <p>Para consultas sobre esta política: <a href="mailto:soporte@ayunoreset.com">soporte@ayunoreset.com</a></p>
+  </div>
+</div>
+
+<!-- ── MODAL: Términos de Uso ── -->
+<div class="modal-overlay" id="modal-terms" onclick="if(event.target===this)closeModal('modal-terms')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-terms')">✕</button>
+    <h2>Términos de Uso</h2>
+    <p><strong>Última actualización:</strong> enero de 2025</p>
+    <h3>1. Aceptación de los términos</h3>
+    <p>Al acceder y utilizar este sitio web, usted acepta quedar vinculado por estos Términos de Uso. Si no está de acuerdo, no utilice este sitio.</p>
+    <h3>2. Descripción del servicio</h3>
+    <p>Ayuno Reset ofrece un programa personalizado de nutrición y ayuno intermitente con fines informativos y educativos. El contenido no constituye asesoramiento médico profesional.</p>
+    <h3>3. Resultados y garantías</h3>
+    <p>Los resultados individuales varían. No garantizamos que usted obtenga los mismos resultados que aparecen en los testimonios. El éxito depende de factores individuales como metabolismo, adherencia al plan y condiciones de salud preexistentes.</p>
+    <h3>4. Aviso médico</h3>
+    <p>Este programa no sustituye la atención médica profesional. Consulte a su médico antes de comenzar cualquier programa de pérdida de peso, especialmente si tiene condiciones médicas preexistentes, está embarazada o en período de lactancia.</p>
+    <h3>5. Propiedad intelectual</h3>
+    <p>Todo el contenido de este sitio (textos, imágenes, videos, logotipos) es propiedad de Ayuno Reset y está protegido por las leyes de propiedad intelectual. Queda prohibida su reproducción sin autorización previa.</p>
+    <h3>6. Política de reembolso</h3>
+    <p>Ofrecemos una garantía de satisfacción de 30 días. Si no está satisfecho con el programa, contáctenos en <a href="mailto:soporte@ayunoreset.com">soporte@ayunoreset.com</a> para gestionar su reembolso.</p>
+    <h3>7. Limitación de responsabilidad</h3>
+    <p>Ayuno Reset no será responsable de daños directos, indirectos o incidentales derivados del uso o la incapacidad de uso de nuestros servicios.</p>
+    <h3>8. Contacto</h3>
+    <p><a href="mailto:soporte@ayunoreset.com">soporte@ayunoreset.com</a></p>
+  </div>
+</div>
+
+<!-- ── MODAL: Política de Cookies ── -->
+<div class="modal-overlay" id="modal-cookies" onclick="if(event.target===this)closeModal('modal-cookies')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-cookies')">✕</button>
+    <h2>Política de Cookies</h2>
+    <p><strong>Última actualización:</strong> enero de 2025</p>
+    <h3>¿Qué son las cookies?</h3>
+    <p>Las cookies son pequeños archivos de texto que se almacenan en su dispositivo cuando visita un sitio web. Nos ayudan a mejorar su experiencia y a entender cómo se usa nuestro sitio.</p>
+    <h3>Cookies que utilizamos</h3>
+    <p><strong>Cookies esenciales:</strong> Necesarias para el funcionamiento básico del cuestionario y personalización de su plan.</p>
+    <p><strong>Cookies analíticas y de publicidad:</strong> Utilizamos el Pixel de Meta (Facebook) para medir la efectividad de nuestras campañas publicitarias. Estas cookies nos ayudan a mostrarle anuncios relevantes en Meta y otras plataformas.</p>
+    <p><strong>Cookies de terceros:</strong> Hotmart (plataforma de pago) puede establecer cookies al procesar transacciones.</p>
+    <h3>Cómo controlar las cookies</h3>
+    <p>Puede configurar su navegador para rechazar todas las cookies o para que le avise cuando se envíe una. Sin embargo, algunas funciones del sitio pueden no estar disponibles si rechaza las cookies.</p>
+    <h3>Contacto</h3>
+    <p>Para consultas: <a href="mailto:soporte@ayunoreset.com">soporte@ayunoreset.com</a></p>
+  </div>
+</div>
+
 <script>
 const TOTAL = 42;
 let cur = 1;
@@ -1823,6 +1993,17 @@ function loadVturb(playerId) {
   s.async = true;
   document.head.appendChild(s);
 }
+
+function openModal(id) {
+  const m = document.getElementById(id);
+  if (m) { m.classList.add('open'); document.body.style.overflow = 'hidden'; }
+}
+function closeModal(id) {
+  const m = document.getElementById(id);
+  if (m) { m.classList.remove('open'); document.body.style.overflow = ''; }
+}
+// Fecha modal com tecla Esc
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); });
 
 function showSales() {
   document.getElementById('shell').style.display='none';
